@@ -1,0 +1,742 @@
+quantity,value
+pool5|iface|GFN2-xTB/CPCM-X|mean,0.6403272833379575
+rho|iface|GFN2-xTB/CPCM-X|mean,0.837593984962406
+spread|iface|GFN2-xTB/CPCM-X|mean,0.1083980768200892
+pool3min|iface|GFN2-xTB/CPCM-X|mean,0.6076798030959859
+pool3max|iface|GFN2-xTB/CPCM-X|mean,0.6532341391492593
+neff|iface|GFN2-xTB/CPCM-X|mean,7.0
+pool5|iface|GFN2-xTB/CPCM-X|pop,0.6492975541249363
+rho|iface|GFN2-xTB/CPCM-X|pop,0.8421052631578947
+spread|iface|GFN2-xTB/CPCM-X|pop,0.1068358638752323
+pool3min|iface|GFN2-xTB/CPCM-X|pop,0.6205138972052936
+pool3max|iface|GFN2-xTB/CPCM-X|pop,0.6649472997515892
+neff|iface|GFN2-xTB/CPCM-X|pop,5.361555187701332
+pool5|iface|GFN2-xTB/CPCM-X|boltz,0.6213847821352962
+rho|iface|GFN2-xTB/CPCM-X|boltz,0.813533834586466
+spread|iface|GFN2-xTB/CPCM-X|boltz,0.1099491339984071
+pool3min|iface|GFN2-xTB/CPCM-X|boltz,0.5766969794997086
+pool3max|iface|GFN2-xTB/CPCM-X|boltz,0.6438584420519109
+neff|iface|GFN2-xTB/CPCM-X|boltz,1.001006362058573
+pool5|iface|GFN2-xTB/CPCM-X|scatter,0.6421558494914621
+rho|iface|GFN2-xTB/CPCM-X|scatter,0.8421052631578947
+spread|iface|GFN2-xTB/CPCM-X|scatter,0.0942456161893534
+pool3min|iface|GFN2-xTB/CPCM-X|scatter,0.6150614545462175
+pool3max|iface|GFN2-xTB/CPCM-X|scatter,0.6575591294307034
+neff|iface|GFN2-xTB/CPCM-X|scatter,4.1548449662978
+"pool5|iface|GFN2-xTB/CPCM-X, CDS removed|mean",0.6516990882629792
+"rho|iface|GFN2-xTB/CPCM-X, CDS removed|mean",0.8330827067669173
+"spread|iface|GFN2-xTB/CPCM-X, CDS removed|mean",0.0545990115954292
+"pool3min|iface|GFN2-xTB/CPCM-X, CDS removed|mean",0.6237850291194392
+"pool3max|iface|GFN2-xTB/CPCM-X, CDS removed|mean",0.665379795065431
+"neff|iface|GFN2-xTB/CPCM-X, CDS removed|mean",7.0
+"pool5|iface|GFN2-xTB/CPCM-X, CDS removed|pop",0.6554726936822746
+"rho|iface|GFN2-xTB/CPCM-X, CDS removed|pop",0.8165413533834586
+"spread|iface|GFN2-xTB/CPCM-X, CDS removed|pop",0.0681315248348269
+"pool3min|iface|GFN2-xTB/CPCM-X, CDS removed|pop",0.6318705937051129
+"pool3max|iface|GFN2-xTB/CPCM-X, CDS removed|pop",0.6661779054521937
+"neff|iface|GFN2-xTB/CPCM-X, CDS removed|pop",5.361555187701332
+"pool5|iface|GFN2-xTB/CPCM-X, CDS removed|boltz",0.6465087654819788
+"rho|iface|GFN2-xTB/CPCM-X, CDS removed|boltz",0.8210526315789473
+"spread|iface|GFN2-xTB/CPCM-X, CDS removed|boltz",0.0716823641127168
+"pool3min|iface|GFN2-xTB/CPCM-X, CDS removed|boltz",0.6195248412135788
+"pool3max|iface|GFN2-xTB/CPCM-X, CDS removed|boltz",0.6548818976504328
+"neff|iface|GFN2-xTB/CPCM-X, CDS removed|boltz",1.0001977203193786
+"pool5|iface|GFN2-xTB/CPCM-X, CDS removed|scatter",0.6492467236323193
+"rho|iface|GFN2-xTB/CPCM-X, CDS removed|scatter",0.8240601503759398
+"spread|iface|GFN2-xTB/CPCM-X, CDS removed|scatter",0.0584546566586398
+"pool3min|iface|GFN2-xTB/CPCM-X, CDS removed|scatter",0.6247512372198933
+"pool3max|iface|GFN2-xTB/CPCM-X, CDS removed|scatter",0.6583426195537112
+"neff|iface|GFN2-xTB/CPCM-X, CDS removed|scatter",3.84817722741405
+pool5|iface|GFN2-xTB/GBSA|mean,0.6972176017436386
+rho|iface|GFN2-xTB/GBSA|mean,0.8285714285714285
+spread|iface|GFN2-xTB/GBSA|mean,0.1434785866794277
+pool3min|iface|GFN2-xTB/GBSA|mean,0.6540213180028632
+pool3max|iface|GFN2-xTB/GBSA|mean,0.7237104958820442
+neff|iface|GFN2-xTB/GBSA|mean,7.0
+pool5|iface|GFN2-xTB/GBSA|pop,0.695781804169772
+rho|iface|GFN2-xTB/GBSA|pop,0.8210526315789473
+spread|iface|GFN2-xTB/GBSA|pop,0.1272093913309328
+pool3min|iface|GFN2-xTB/GBSA|pop,0.652461492763824
+pool3max|iface|GFN2-xTB/GBSA|pop,0.7309167496757474
+neff|iface|GFN2-xTB/GBSA|pop,5.361555187701332
+pool5|iface|GFN2-xTB/GBSA|boltz,0.703056008555305
+rho|iface|GFN2-xTB/GBSA|boltz,0.7924812030075187
+spread|iface|GFN2-xTB/GBSA|boltz,0.1462923426538367
+pool3min|iface|GFN2-xTB/GBSA|boltz,0.6527075350596923
+pool3max|iface|GFN2-xTB/GBSA|boltz,0.711371713424814
+neff|iface|GFN2-xTB/GBSA|boltz,1.0000148751476226
+pool5|iface|GFN2-xTB/GBSA|scatter,0.7082300443839377
+rho|iface|GFN2-xTB/GBSA|scatter,0.8210526315789473
+spread|iface|GFN2-xTB/GBSA|scatter,0.132419204164386
+pool3min|iface|GFN2-xTB/GBSA|scatter,0.681402975234076
+pool3max|iface|GFN2-xTB/GBSA|scatter,0.7180851329223161
+neff|iface|GFN2-xTB/GBSA|scatter,3.943234142179266
+pool5|iface|GFN2-xTB/ALPB|mean,0.6852654380015502
+rho|iface|GFN2-xTB/ALPB|mean,0.7969924812030074
+spread|iface|GFN2-xTB/ALPB|mean,0.1057697386021528
+pool3min|iface|GFN2-xTB/ALPB|mean,0.6543709231166727
+pool3max|iface|GFN2-xTB/ALPB|mean,0.7003962578138769
+neff|iface|GFN2-xTB/ALPB|mean,7.0
+pool5|iface|GFN2-xTB/ALPB|pop,0.6863005613403252
+rho|iface|GFN2-xTB/ALPB|pop,0.7894736842105263
+spread|iface|GFN2-xTB/ALPB|pop,0.1003740515519375
+pool3min|iface|GFN2-xTB/ALPB|pop,0.6551841920410605
+pool3max|iface|GFN2-xTB/ALPB|pop,0.7079305212092122
+neff|iface|GFN2-xTB/ALPB|pop,5.361555187701332
+pool5|iface|GFN2-xTB/ALPB|boltz,0.6803725145192014
+rho|iface|GFN2-xTB/ALPB|boltz,0.77593984962406
+spread|iface|GFN2-xTB/ALPB|boltz,0.105298842671369
+pool3min|iface|GFN2-xTB/ALPB|boltz,0.6330023315235095
+pool3max|iface|GFN2-xTB/ALPB|boltz,0.6877998825330407
+neff|iface|GFN2-xTB/ALPB|boltz,1.0000259369182154
+pool5|iface|GFN2-xTB/ALPB|scatter,0.6930477603217392
+rho|iface|GFN2-xTB/ALPB|scatter,0.8240601503759398
+spread|iface|GFN2-xTB/ALPB|scatter,0.0949343998356146
+pool3min|iface|GFN2-xTB/ALPB|scatter,0.661713860662695
+pool3max|iface|GFN2-xTB/ALPB|scatter,0.7000823408502572
+neff|iface|GFN2-xTB/ALPB|scatter,3.989339320539971
+pool5|iface|GFN2-xTB/ddCOSMO|mean,0.5949363468385847
+rho|iface|GFN2-xTB/ddCOSMO|mean,0.7413533834586465
+spread|iface|GFN2-xTB/ddCOSMO|mean,0.027490527132407
+pool3min|iface|GFN2-xTB/ddCOSMO|mean,0.5839338020510902
+pool3max|iface|GFN2-xTB/ddCOSMO|mean,0.600823149443078
+neff|iface|GFN2-xTB/ddCOSMO|mean,7.0
+pool5|iface|GFN2-xTB/ddCOSMO|pop,0.5998922470400724
+rho|iface|GFN2-xTB/ddCOSMO|pop,0.7488721804511278
+spread|iface|GFN2-xTB/ddCOSMO|pop,0.0697476637215288
+pool3min|iface|GFN2-xTB/ddCOSMO|pop,0.5755867650782555
+pool3max|iface|GFN2-xTB/ddCOSMO|pop,0.614931470983245
+neff|iface|GFN2-xTB/ddCOSMO|pop,5.361555187701332
+pool5|iface|GFN2-xTB/ddCOSMO|boltz,0.5836142366677496
+rho|iface|GFN2-xTB/ddCOSMO|boltz,0.7684210526315788
+spread|iface|GFN2-xTB/ddCOSMO|boltz,0.0399058986921174
+pool3min|iface|GFN2-xTB/ddCOSMO|boltz,0.565968940221259
+pool3max|iface|GFN2-xTB/ddCOSMO|boltz,0.5873104648555864
+neff|iface|GFN2-xTB/ddCOSMO|boltz,1.0007519191679382
+pool5|iface|GFN2-xTB/ddCOSMO|scatter,0.5929706750147282
+rho|iface|GFN2-xTB/ddCOSMO|scatter,0.7669172932330827
+spread|iface|GFN2-xTB/ddCOSMO|scatter,0.0378608736897333
+pool3min|iface|GFN2-xTB/ddCOSMO|scatter,0.5796548468162622
+pool3max|iface|GFN2-xTB/ddCOSMO|scatter,0.5986535653241919
+neff|iface|GFN2-xTB/ddCOSMO|scatter,3.8668879294816927
+pool5|aa|GFN2-xTB/CPCM-X|mean,0.6127351266809901
+rho|aa|GFN2-xTB/CPCM-X|mean,0.8571428571428572
+spread|aa|GFN2-xTB/CPCM-X|mean,0.0749281708450901
+pool3min|aa|GFN2-xTB/CPCM-X|mean,0.5851316671444164
+pool3max|aa|GFN2-xTB/CPCM-X|mean,0.6278670705441582
+neff|aa|GFN2-xTB/CPCM-X|mean,8.0
+pool5|aa|GFN2-xTB/CPCM-X|pop,0.6223985383084064
+rho|aa|GFN2-xTB/CPCM-X|pop,0.8601503759398496
+spread|aa|GFN2-xTB/CPCM-X|pop,0.0639360725577448
+pool3min|aa|GFN2-xTB/CPCM-X|pop,0.60083769198521
+pool3max|aa|GFN2-xTB/CPCM-X|pop,0.6312368656427418
+neff|aa|GFN2-xTB/CPCM-X|pop,7.020630390099688
+pool5|aa|GFN2-xTB/CPCM-X|boltz,0.5981193585660248
+rho|aa|GFN2-xTB/CPCM-X|boltz,0.7954887218045112
+spread|aa|GFN2-xTB/CPCM-X|boltz,0.136310614783613
+pool3min|aa|GFN2-xTB/CPCM-X|boltz,0.5559863050557934
+pool3max|aa|GFN2-xTB/CPCM-X|boltz,0.6320832298830263
+neff|aa|GFN2-xTB/CPCM-X|boltz,1.0013194183821374
+pool5|aa|GFN2-xTB/CPCM-X|scatter,0.6087156323419948
+rho|aa|GFN2-xTB/CPCM-X|scatter,0.8180451127819548
+spread|aa|GFN2-xTB/CPCM-X|scatter,0.112584318984087
+pool3min|aa|GFN2-xTB/CPCM-X|scatter,0.5743746555253894
+pool3max|aa|GFN2-xTB/CPCM-X|scatter,0.6323906601647129
+neff|aa|GFN2-xTB/CPCM-X|scatter,4.856049888126368
+"pool5|aa|GFN2-xTB/CPCM-X, CDS removed|mean",0.6277140925490474
+"rho|aa|GFN2-xTB/CPCM-X, CDS removed|mean",0.8075187969924811
+"spread|aa|GFN2-xTB/CPCM-X, CDS removed|mean",0.0565959783635368
+"pool3min|aa|GFN2-xTB/CPCM-X, CDS removed|mean",0.6102083602379587
+"pool3max|aa|GFN2-xTB/CPCM-X, CDS removed|mean",0.6384746327346041
+"neff|aa|GFN2-xTB/CPCM-X, CDS removed|mean",8.0
+"pool5|aa|GFN2-xTB/CPCM-X, CDS removed|pop",0.6319549522988505
+"rho|aa|GFN2-xTB/CPCM-X, CDS removed|pop",0.8165413533834586
+"spread|aa|GFN2-xTB/CPCM-X, CDS removed|pop",0.0599394705467817
+"pool3min|aa|GFN2-xTB/CPCM-X, CDS removed|pop",0.6097906252077758
+"pool3max|aa|GFN2-xTB/CPCM-X, CDS removed|pop",0.6464767182592163
+"neff|aa|GFN2-xTB/CPCM-X, CDS removed|pop",7.020630390099688
+"pool5|aa|GFN2-xTB/CPCM-X, CDS removed|boltz",0.6128255194780673
+"rho|aa|GFN2-xTB/CPCM-X, CDS removed|boltz",0.7999999999999999
+"spread|aa|GFN2-xTB/CPCM-X, CDS removed|boltz",0.1288153735982766
+"pool3min|aa|GFN2-xTB/CPCM-X, CDS removed|boltz",0.5795430118338324
+"pool3max|aa|GFN2-xTB/CPCM-X, CDS removed|boltz",0.6410825679715473
+"neff|aa|GFN2-xTB/CPCM-X, CDS removed|boltz",1.0003656656940303
+"pool5|aa|GFN2-xTB/CPCM-X, CDS removed|scatter",0.6232250943876233
+"rho|aa|GFN2-xTB/CPCM-X, CDS removed|scatter",0.8075187969924811
+"spread|aa|GFN2-xTB/CPCM-X, CDS removed|scatter",0.0965423423169645
+"pool3min|aa|GFN2-xTB/CPCM-X, CDS removed|scatter",0.5963498911072602
+"pool3max|aa|GFN2-xTB/CPCM-X, CDS removed|scatter",0.6465532477631757
+"neff|aa|GFN2-xTB/CPCM-X, CDS removed|scatter",4.534320455040772
+pool5|aa|GFN2-xTB/GBSA|mean,0.6809051980751232
+rho|aa|GFN2-xTB/GBSA|mean,0.7954887218045112
+spread|aa|GFN2-xTB/GBSA|mean,0.0833335090493806
+pool3min|aa|GFN2-xTB/GBSA|mean,0.6524917965791993
+pool3max|aa|GFN2-xTB/GBSA|mean,0.6930695762666179
+neff|aa|GFN2-xTB/GBSA|mean,8.0
+pool5|aa|GFN2-xTB/GBSA|pop,0.6878622566764954
+rho|aa|GFN2-xTB/GBSA|pop,0.7954887218045112
+spread|aa|GFN2-xTB/GBSA|pop,0.0919594735694792
+pool3min|aa|GFN2-xTB/GBSA|pop,0.6549784808885588
+pool3max|aa|GFN2-xTB/GBSA|pop,0.702623824421737
+neff|aa|GFN2-xTB/GBSA|pop,7.020630390099688
+pool5|aa|GFN2-xTB/GBSA|boltz,0.6752637466932211
+rho|aa|GFN2-xTB/GBSA|boltz,0.7849624060150376
+spread|aa|GFN2-xTB/GBSA|boltz,0.1146496591491204
+pool3min|aa|GFN2-xTB/GBSA|boltz,0.6333892384755071
+pool3max|aa|GFN2-xTB/GBSA|boltz,0.6861126813380586
+neff|aa|GFN2-xTB/GBSA|boltz,1.0006072612820769
+pool5|aa|GFN2-xTB/GBSA|scatter,0.6864360102975567
+rho|aa|GFN2-xTB/GBSA|scatter,0.7804511278195487
+spread|aa|GFN2-xTB/GBSA|scatter,0.106466015638676
+pool3min|aa|GFN2-xTB/GBSA|scatter,0.649094655769707
+pool3max|aa|GFN2-xTB/GBSA|scatter,0.7001680398104828
+neff|aa|GFN2-xTB/GBSA|scatter,4.669018724132068
+pool5|aa|GFN2-xTB/ALPB|mean,0.6783617957387326
+rho|aa|GFN2-xTB/ALPB|mean,0.7789473684210525
+spread|aa|GFN2-xTB/ALPB|mean,0.0717774566060865
+pool3min|aa|GFN2-xTB/ALPB|mean,0.6485581928473728
+pool3max|aa|GFN2-xTB/ALPB|mean,0.6910286722443313
+neff|aa|GFN2-xTB/ALPB|mean,8.0
+pool5|aa|GFN2-xTB/ALPB|pop,0.6866763012201725
+rho|aa|GFN2-xTB/ALPB|pop,0.7744360902255639
+spread|aa|GFN2-xTB/ALPB|pop,0.0941198692794905
+pool3min|aa|GFN2-xTB/ALPB|pop,0.6480690345852208
+pool3max|aa|GFN2-xTB/ALPB|pop,0.7047885331616032
+neff|aa|GFN2-xTB/ALPB|pop,7.020630390099688
+pool5|aa|GFN2-xTB/ALPB|boltz,0.6626014220758091
+rho|aa|GFN2-xTB/ALPB|boltz,0.7819548872180451
+spread|aa|GFN2-xTB/ALPB|boltz,0.0961204289939585
+pool3min|aa|GFN2-xTB/ALPB|boltz,0.6152642322588739
+pool3max|aa|GFN2-xTB/ALPB|boltz,0.6839140719531144
+neff|aa|GFN2-xTB/ALPB|boltz,1.0001542746165415
+pool5|aa|GFN2-xTB/ALPB|scatter,0.6764396603288388
+rho|aa|GFN2-xTB/ALPB|scatter,0.7909774436090224
+spread|aa|GFN2-xTB/ALPB|scatter,0.0908100319008098
+pool3min|aa|GFN2-xTB/ALPB|scatter,0.632262793852111
+pool3max|aa|GFN2-xTB/ALPB|scatter,0.6980504234228484
+neff|aa|GFN2-xTB/ALPB|scatter,4.550826783974177
+pool5|aa|GFN2-xTB/ddCOSMO|mean,0.5718164455213653
+rho|aa|GFN2-xTB/ddCOSMO|mean,0.7548872180451127
+spread|aa|GFN2-xTB/ddCOSMO|mean,0.02328539393946
+pool3min|aa|GFN2-xTB/ddCOSMO|mean,0.5615011242088089
+pool3max|aa|GFN2-xTB/ddCOSMO|mean,0.5755789807808844
+neff|aa|GFN2-xTB/ddCOSMO|mean,8.0
+pool5|aa|GFN2-xTB/ddCOSMO|pop,0.5709099762123692
+rho|aa|GFN2-xTB/ddCOSMO|pop,0.7428571428571428
+spread|aa|GFN2-xTB/ddCOSMO|pop,0.0440070121880524
+pool3min|aa|GFN2-xTB/ddCOSMO|pop,0.5546916826087384
+pool3max|aa|GFN2-xTB/ddCOSMO|pop,0.5791947127230859
+neff|aa|GFN2-xTB/ddCOSMO|pop,7.020630390099688
+pool5|aa|GFN2-xTB/ddCOSMO|boltz,0.5577006768351815
+rho|aa|GFN2-xTB/ddCOSMO|boltz,0.7338345864661654
+spread|aa|GFN2-xTB/ddCOSMO|boltz,0.0698267420638894
+pool3min|aa|GFN2-xTB/ddCOSMO|boltz,0.5363226139956726
+pool3max|aa|GFN2-xTB/ddCOSMO|boltz,0.5741014534260325
+neff|aa|GFN2-xTB/ddCOSMO|boltz,1.0013748456698672
+pool5|aa|GFN2-xTB/ddCOSMO|scatter,0.5643177047428044
+rho|aa|GFN2-xTB/ddCOSMO|scatter,0.7593984962406014
+spread|aa|GFN2-xTB/ddCOSMO|scatter,0.0273746145138642
+pool3min|aa|GFN2-xTB/ddCOSMO|scatter,0.5558041893863453
+pool3max|aa|GFN2-xTB/ddCOSMO|scatter,0.5680822715970526
+neff|aa|GFN2-xTB/ddCOSMO|scatter,4.6662944501567685
+pool5|bb|GFN2-xTB/CPCM-X|mean,0.6315257825789544
+rho|bb|GFN2-xTB/CPCM-X|mean,0.8406015037593983
+spread|bb|GFN2-xTB/CPCM-X|mean,0.0367531607181895
+pool3min|bb|GFN2-xTB/CPCM-X|mean,0.6144891686263604
+pool3max|bb|GFN2-xTB/CPCM-X|mean,0.6356833010498588
+neff|bb|GFN2-xTB/CPCM-X|mean,7.0
+pool5|bb|GFN2-xTB/CPCM-X|pop,0.651287915748612
+rho|bb|GFN2-xTB/CPCM-X|pop,0.8421052631578947
+spread|bb|GFN2-xTB/CPCM-X|pop,0.0497778967462728
+pool3min|bb|GFN2-xTB/CPCM-X|pop,0.6317878102463993
+pool3max|bb|GFN2-xTB/CPCM-X|pop,0.6510958489011045
+neff|bb|GFN2-xTB/CPCM-X|pop,5.879015097473826
+pool5|bb|GFN2-xTB/CPCM-X|boltz,0.6279684155547673
+rho|bb|GFN2-xTB/CPCM-X|boltz,0.8120300751879698
+spread|bb|GFN2-xTB/CPCM-X|boltz,0.1715911043157315
+pool3min|bb|GFN2-xTB/CPCM-X|boltz,0.5738802111484911
+pool3max|bb|GFN2-xTB/CPCM-X|boltz,0.6592607077898816
+neff|bb|GFN2-xTB/CPCM-X|boltz,1.0002571084204428
+pool5|bb|GFN2-xTB/CPCM-X|scatter,0.6347146212049967
+rho|bb|GFN2-xTB/CPCM-X|scatter,0.819548872180451
+spread|bb|GFN2-xTB/CPCM-X|scatter,0.0923939663785206
+pool3min|bb|GFN2-xTB/CPCM-X|scatter,0.6027366602469117
+pool3max|bb|GFN2-xTB/CPCM-X|scatter,0.6448989245483243
+neff|bb|GFN2-xTB/CPCM-X|scatter,4.3418870976003845
+"pool5|bb|GFN2-xTB/CPCM-X, CDS removed|mean",0.6416283283932569
+"rho|bb|GFN2-xTB/CPCM-X, CDS removed|mean",0.813533834586466
+"spread|bb|GFN2-xTB/CPCM-X, CDS removed|mean",0.0699617429020766
+"pool3min|bb|GFN2-xTB/CPCM-X, CDS removed|mean",0.6213849239042015
+"pool3max|bb|GFN2-xTB/CPCM-X, CDS removed|mean",0.6539475516427772
+"neff|bb|GFN2-xTB/CPCM-X, CDS removed|mean",7.0
+"pool5|bb|GFN2-xTB/CPCM-X, CDS removed|pop",0.639833823496403
+"rho|bb|GFN2-xTB/CPCM-X, CDS removed|pop",0.8045112781954886
+"spread|bb|GFN2-xTB/CPCM-X, CDS removed|pop",0.0611396996776132
+"pool3min|bb|GFN2-xTB/CPCM-X, CDS removed|pop",0.6226683925267223
+"pool3max|bb|GFN2-xTB/CPCM-X, CDS removed|pop",0.6515407668156685
+"neff|bb|GFN2-xTB/CPCM-X, CDS removed|pop",5.879015097473826
+"pool5|bb|GFN2-xTB/CPCM-X, CDS removed|boltz",0.642711763671792
+"rho|bb|GFN2-xTB/CPCM-X, CDS removed|boltz",0.819548872180451
+"spread|bb|GFN2-xTB/CPCM-X, CDS removed|boltz",0.1959763380362589
+"pool3min|bb|GFN2-xTB/CPCM-X, CDS removed|boltz",0.5868357255176947
+"pool3max|bb|GFN2-xTB/CPCM-X, CDS removed|boltz",0.6833595738547785
+"neff|bb|GFN2-xTB/CPCM-X, CDS removed|boltz",1.0000343029460406
+"pool5|bb|GFN2-xTB/CPCM-X, CDS removed|scatter",0.6483175449847393
+"rho|bb|GFN2-xTB/CPCM-X, CDS removed|scatter",0.819548872180451
+"spread|bb|GFN2-xTB/CPCM-X, CDS removed|scatter",0.1255268488091544
+"pool3min|bb|GFN2-xTB/CPCM-X, CDS removed|scatter",0.6156267777805791
+"pool3max|bb|GFN2-xTB/CPCM-X, CDS removed|scatter",0.6732413695282747
+"neff|bb|GFN2-xTB/CPCM-X, CDS removed|scatter",4.029461980707305
+pool5|bb|GFN2-xTB/GBSA|mean,0.6786966449898193
+rho|bb|GFN2-xTB/GBSA|mean,0.8601503759398496
+spread|bb|GFN2-xTB/GBSA|mean,0.1452236080848303
+pool3min|bb|GFN2-xTB/GBSA|mean,0.6298869446198824
+pool3max|bb|GFN2-xTB/GBSA|mean,0.706226800685011
+neff|bb|GFN2-xTB/GBSA|mean,7.0
+pool5|bb|GFN2-xTB/GBSA|pop,0.6652712948251402
+rho|bb|GFN2-xTB/GBSA|pop,0.7999999999999999
+spread|bb|GFN2-xTB/GBSA|pop,0.1596205194226114
+pool3min|bb|GFN2-xTB/GBSA|pop,0.6120782040017414
+pool3max|bb|GFN2-xTB/GBSA|pop,0.6987531188400707
+neff|bb|GFN2-xTB/GBSA|pop,5.879015097473826
+pool5|bb|GFN2-xTB/GBSA|boltz,0.6476092901991198
+rho|bb|GFN2-xTB/GBSA|boltz,0.7804511278195487
+spread|bb|GFN2-xTB/GBSA|boltz,0.1666339869568625
+pool3min|bb|GFN2-xTB/GBSA|boltz,0.5661656192265787
+pool3max|bb|GFN2-xTB/GBSA|boltz,0.6778575823989216
+neff|bb|GFN2-xTB/GBSA|boltz,1.0004130113624403
+pool5|bb|GFN2-xTB/GBSA|scatter,0.6645813653660068
+rho|bb|GFN2-xTB/GBSA|scatter,0.8180451127819548
+spread|bb|GFN2-xTB/GBSA|scatter,0.1242165942539147
+pool3min|bb|GFN2-xTB/GBSA|scatter,0.6051773479862939
+pool3max|bb|GFN2-xTB/GBSA|scatter,0.6963605193890429
+neff|bb|GFN2-xTB/GBSA|scatter,3.959715573937669
+pool5|bb|GFN2-xTB/ALPB|mean,0.6686895907042766
+rho|bb|GFN2-xTB/ALPB|mean,0.7909774436090224
+spread|bb|GFN2-xTB/ALPB|mean,0.1396323437581682
+pool3min|bb|GFN2-xTB/ALPB|mean,0.6277532340684805
+pool3max|bb|GFN2-xTB/ALPB|mean,0.6925010096984433
+neff|bb|GFN2-xTB/ALPB|mean,7.0
+pool5|bb|GFN2-xTB/ALPB|pop,0.6548359387809572
+rho|bb|GFN2-xTB/ALPB|pop,0.7624060150375939
+spread|bb|GFN2-xTB/ALPB|pop,0.1600358491367056
+pool3min|bb|GFN2-xTB/ALPB|pop,0.5973844026370584
+pool3max|bb|GFN2-xTB/ALPB|pop,0.6874015618731709
+neff|bb|GFN2-xTB/ALPB|pop,5.879015097473826
+pool5|bb|GFN2-xTB/ALPB|boltz,0.6374413725853945
+rho|bb|GFN2-xTB/ALPB|boltz,0.7744360902255639
+spread|bb|GFN2-xTB/ALPB|boltz,0.1849375287244445
+pool3min|bb|GFN2-xTB/ALPB|boltz,0.5440410890704884
+pool3max|bb|GFN2-xTB/ALPB|boltz,0.6859772087152548
+neff|bb|GFN2-xTB/ALPB|boltz,1.000575213867336
+pool5|bb|GFN2-xTB/ALPB|scatter,0.6535278804617869
+rho|bb|GFN2-xTB/ALPB|scatter,0.7924812030075187
+spread|bb|GFN2-xTB/ALPB|scatter,0.1485001729792933
+pool3min|bb|GFN2-xTB/ALPB|scatter,0.5867344189755352
+pool3max|bb|GFN2-xTB/ALPB|scatter,0.6861806072632698
+neff|bb|GFN2-xTB/ALPB|scatter,3.934501263869409
+pool5|bb|GFN2-xTB/ddCOSMO|mean,0.5730220666711452
+rho|bb|GFN2-xTB/ddCOSMO|mean,0.7398496240601502
+spread|bb|GFN2-xTB/ddCOSMO|mean,0.0510141142131108
+pool3min|bb|GFN2-xTB/ddCOSMO|mean,0.5573510915494279
+pool3max|bb|GFN2-xTB/ddCOSMO|mean,0.580360760469938
+neff|bb|GFN2-xTB/ddCOSMO|mean,7.0
+pool5|bb|GFN2-xTB/ddCOSMO|pop,0.565040491239779
+rho|bb|GFN2-xTB/ddCOSMO|pop,0.7383458646616541
+spread|bb|GFN2-xTB/ddCOSMO|pop,0.039190986571567
+pool3min|bb|GFN2-xTB/ddCOSMO|pop,0.5469288222082955
+pool3max|bb|GFN2-xTB/ddCOSMO|pop,0.5699222240344772
+neff|bb|GFN2-xTB/ddCOSMO|pop,5.879015097473826
+pool5|bb|GFN2-xTB/ddCOSMO|boltz,0.5721805831679525
+rho|bb|GFN2-xTB/ddCOSMO|boltz,0.7172932330827068
+spread|bb|GFN2-xTB/ddCOSMO|boltz,0.1937932067556991
+pool3min|bb|GFN2-xTB/ddCOSMO|boltz,0.5286056765423263
+pool3max|bb|GFN2-xTB/ddCOSMO|boltz,0.5998693963305386
+neff|bb|GFN2-xTB/ddCOSMO|boltz,1.000214444943708
+pool5|bb|GFN2-xTB/ddCOSMO|scatter,0.5770265195013276
+rho|bb|GFN2-xTB/ddCOSMO|scatter,0.7353383458646616
+spread|bb|GFN2-xTB/ddCOSMO|scatter,0.1300736888957976
+pool3min|bb|GFN2-xTB/ddCOSMO|scatter,0.5466858668507071
+pool3max|bb|GFN2-xTB/ddCOSMO|scatter,0.5923904002269272
+neff|bb|GFN2-xTB/ddCOSMO|scatter,4.097814958436905
+pool5|contacts|GFN2-xTB/CPCM-X|mean,0.6270320710181642
+rho|contacts|GFN2-xTB/CPCM-X|mean,0.8436090225563909
+spread|contacts|GFN2-xTB/CPCM-X|mean,0.0775842243824653
+pool3min|contacts|GFN2-xTB/CPCM-X|mean,0.5745798246075818
+pool3max|contacts|GFN2-xTB/CPCM-X|mean,0.6543050879237493
+neff|contacts|GFN2-xTB/CPCM-X|mean,2.5
+pool5|contacts|GFN2-xTB/CPCM-X|pop,0.6488662589577495
+rho|contacts|GFN2-xTB/CPCM-X|pop,0.8466165413533834
+spread|contacts|GFN2-xTB/CPCM-X|pop,0.0751638718483295
+pool3min|contacts|GFN2-xTB/CPCM-X|pop,0.5936184779905241
+pool3max|contacts|GFN2-xTB/CPCM-X|pop,0.6630972358860548
+neff|contacts|GFN2-xTB/CPCM-X|pop,1.660884242133784
+pool5|contacts|GFN2-xTB/CPCM-X|boltz,0.5648131320869673
+rho|contacts|GFN2-xTB/CPCM-X|boltz,0.7639097744360903
+spread|contacts|GFN2-xTB/CPCM-X|boltz,0.1150838020907201
+pool3min|contacts|GFN2-xTB/CPCM-X|boltz,0.4989954979054846
+pool3max|contacts|GFN2-xTB/CPCM-X|boltz,0.5785406501695117
+neff|contacts|GFN2-xTB/CPCM-X|boltz,1.0000000231504074
+pool5|contacts|GFN2-xTB/CPCM-X|scatter,0.599872305650666
+rho|contacts|GFN2-xTB/CPCM-X|scatter,0.8210526315789473
+spread|contacts|GFN2-xTB/CPCM-X|scatter,0.0524202085329832
+pool3min|contacts|GFN2-xTB/CPCM-X|scatter,0.5485849847710987
+pool3max|contacts|GFN2-xTB/CPCM-X|scatter,0.6156685227225592
+neff|contacts|GFN2-xTB/CPCM-X|scatter,1.5993217678403453
+"pool5|contacts|GFN2-xTB/CPCM-X, CDS removed|mean",0.6172076428809569
+"rho|contacts|GFN2-xTB/CPCM-X, CDS removed|mean",0.793984962406015
+"spread|contacts|GFN2-xTB/CPCM-X, CDS removed|mean",0.1086209885148019
+"pool3min|contacts|GFN2-xTB/CPCM-X, CDS removed|mean",0.577839523881911
+"pool3max|contacts|GFN2-xTB/CPCM-X, CDS removed|mean",0.6365609222653897
+"neff|contacts|GFN2-xTB/CPCM-X, CDS removed|mean",2.5
+"pool5|contacts|GFN2-xTB/CPCM-X, CDS removed|pop",0.6233252961354198
+"rho|contacts|GFN2-xTB/CPCM-X, CDS removed|pop",0.806015037593985
+"spread|contacts|GFN2-xTB/CPCM-X, CDS removed|pop",0.1254019518617511
+"pool3min|contacts|GFN2-xTB/CPCM-X, CDS removed|pop",0.5792130096394563
+"pool3max|contacts|GFN2-xTB/CPCM-X, CDS removed|pop",0.6395546821109845
+"neff|contacts|GFN2-xTB/CPCM-X, CDS removed|pop",1.660884242133784
+"pool5|contacts|GFN2-xTB/CPCM-X, CDS removed|boltz",0.5576793574172599
+"rho|contacts|GFN2-xTB/CPCM-X, CDS removed|boltz",0.7714285714285714
+"spread|contacts|GFN2-xTB/CPCM-X, CDS removed|boltz",0.2413293641089194
+"pool3min|contacts|GFN2-xTB/CPCM-X, CDS removed|boltz",0.4786459455306023
+"pool3max|contacts|GFN2-xTB/CPCM-X, CDS removed|boltz",0.6046742654741478
+"neff|contacts|GFN2-xTB/CPCM-X, CDS removed|boltz",1.0000000002738458
+"pool5|contacts|GFN2-xTB/CPCM-X, CDS removed|scatter",0.5865357212293448
+"rho|contacts|GFN2-xTB/CPCM-X, CDS removed|scatter",0.7624060150375939
+"spread|contacts|GFN2-xTB/CPCM-X, CDS removed|scatter",0.1840760365542129
+"pool3min|contacts|GFN2-xTB/CPCM-X, CDS removed|scatter",0.5244962519226775
+"pool3max|contacts|GFN2-xTB/CPCM-X, CDS removed|scatter",0.6238143256981002
+"neff|contacts|GFN2-xTB/CPCM-X, CDS removed|scatter",1.5923074548785094
+pool5|contacts|GFN2-xTB/GBSA|mean,0.6535286090716044
+rho|contacts|GFN2-xTB/GBSA|mean,0.7744360902255639
+spread|contacts|GFN2-xTB/GBSA|mean,0.1601420261006999
+pool3min|contacts|GFN2-xTB/GBSA|mean,0.5853604756731261
+pool3max|contacts|GFN2-xTB/GBSA|mean,0.6758138944977337
+neff|contacts|GFN2-xTB/GBSA|mean,2.5
+pool5|contacts|GFN2-xTB/GBSA|pop,0.6524934487326187
+rho|contacts|GFN2-xTB/GBSA|pop,0.7894736842105263
+spread|contacts|GFN2-xTB/GBSA|pop,0.2082043406624375
+pool3min|contacts|GFN2-xTB/GBSA|pop,0.5878893971951763
+pool3max|contacts|GFN2-xTB/GBSA|pop,0.677136221961995
+neff|contacts|GFN2-xTB/GBSA|pop,1.660884242133784
+pool5|contacts|GFN2-xTB/GBSA|boltz,0.5517455410300277
+rho|contacts|GFN2-xTB/GBSA|boltz,0.6857142857142857
+spread|contacts|GFN2-xTB/GBSA|boltz,0.2400529978066145
+pool3min|contacts|GFN2-xTB/GBSA|boltz,0.4600693910155099
+pool3max|contacts|GFN2-xTB/GBSA|boltz,0.5835849058993304
+neff|contacts|GFN2-xTB/GBSA|boltz,1.0000000000154112
+pool5|contacts|GFN2-xTB/GBSA|scatter,0.5978702012789381
+rho|contacts|GFN2-xTB/GBSA|scatter,0.7338345864661654
+spread|contacts|GFN2-xTB/GBSA|scatter,0.2057564557852885
+pool3min|contacts|GFN2-xTB/GBSA|scatter,0.5199950420010423
+pool3max|contacts|GFN2-xTB/GBSA|scatter,0.6247972506264878
+neff|contacts|GFN2-xTB/GBSA|scatter,1.5921119076128587
+pool5|contacts|GFN2-xTB/ALPB|mean,0.6421505259279875
+rho|contacts|GFN2-xTB/ALPB|mean,0.7744360902255639
+spread|contacts|GFN2-xTB/ALPB|mean,0.1618423496326071
+pool3min|contacts|GFN2-xTB/ALPB|mean,0.5748728135000817
+pool3max|contacts|GFN2-xTB/ALPB|mean,0.6575405749137562
+neff|contacts|GFN2-xTB/ALPB|mean,2.5
+pool5|contacts|GFN2-xTB/ALPB|pop,0.6500517886677564
+rho|contacts|GFN2-xTB/ALPB|pop,0.7729323308270677
+spread|contacts|GFN2-xTB/ALPB|pop,0.2244906775016732
+pool3min|contacts|GFN2-xTB/ALPB|pop,0.582120508758868
+pool3max|contacts|GFN2-xTB/ALPB|pop,0.6709362839488653
+neff|contacts|GFN2-xTB/ALPB|pop,1.660884242133784
+pool5|contacts|GFN2-xTB/ALPB|boltz,0.5515121907887877
+rho|contacts|GFN2-xTB/ALPB|boltz,0.6766917293233082
+spread|contacts|GFN2-xTB/ALPB|boltz,0.201398183913347
+pool3min|contacts|GFN2-xTB/ALPB|boltz,0.4699675380948799
+pool3max|contacts|GFN2-xTB/ALPB|boltz,0.5761124627009612
+neff|contacts|GFN2-xTB/ALPB|boltz,1.0000000000691964
+pool5|contacts|GFN2-xTB/ALPB|scatter,0.5931589000629146
+rho|contacts|GFN2-xTB/ALPB|scatter,0.7187969924812029
+spread|contacts|GFN2-xTB/ALPB|scatter,0.1935992046131785
+pool3min|contacts|GFN2-xTB/ALPB|scatter,0.5259953234798885
+pool3max|contacts|GFN2-xTB/ALPB|scatter,0.6168177912631754
+neff|contacts|GFN2-xTB/ALPB|scatter,1.5920489579187531
+pool5|contacts|GFN2-xTB/ddCOSMO|mean,0.5228014167639919
+rho|contacts|GFN2-xTB/ddCOSMO|mean,0.7218045112781954
+spread|contacts|GFN2-xTB/ddCOSMO|mean,0.1912689841338528
+pool3min|contacts|GFN2-xTB/ddCOSMO|mean,0.4733621204982776
+pool3max|contacts|GFN2-xTB/ddCOSMO|mean,0.5551984344241904
+neff|contacts|GFN2-xTB/ddCOSMO|mean,2.5
+pool5|contacts|GFN2-xTB/ddCOSMO|pop,0.5313945691258644
+rho|contacts|GFN2-xTB/ddCOSMO|pop,0.7368421052631579
+spread|contacts|GFN2-xTB/ddCOSMO|pop,0.2061000278810421
+pool3min|contacts|GFN2-xTB/ddCOSMO|pop,0.4813049085918152
+pool3max|contacts|GFN2-xTB/ddCOSMO|pop,0.5525067335504449
+neff|contacts|GFN2-xTB/ddCOSMO|pop,1.660884242133784
+pool5|contacts|GFN2-xTB/ddCOSMO|boltz,0.4573301761586422
+rho|contacts|GFN2-xTB/ddCOSMO|boltz,0.6796992481203006
+spread|contacts|GFN2-xTB/ddCOSMO|boltz,0.2739707385374116
+pool3min|contacts|GFN2-xTB/ddCOSMO|boltz,0.3881999425524015
+pool3max|contacts|GFN2-xTB/ddCOSMO|boltz,0.5116068488887319
+neff|contacts|GFN2-xTB/ddCOSMO|boltz,1.0000000005949623
+pool5|contacts|GFN2-xTB/ddCOSMO|scatter,0.4873365309288767
+rho|contacts|GFN2-xTB/ddCOSMO|scatter,0.7112781954887217
+spread|contacts|GFN2-xTB/ddCOSMO|scatter,0.247452933720194
+pool3min|contacts|GFN2-xTB/ddCOSMO|scatter,0.4255049743254884
+pool3max|contacts|GFN2-xTB/ddCOSMO|scatter,0.5342728874531224
+neff|contacts|GFN2-xTB/ddCOSMO|scatter,1.592060707826671
+pool5|even10|GFN2-xTB/CPCM-X|mean,0.5904477297773609
+rho|even10|GFN2-xTB/CPCM-X|mean,0.8300751879699247
+spread|even10|GFN2-xTB/CPCM-X|mean,0.0827787407658521
+pool3min|even10|GFN2-xTB/CPCM-X|mean,0.53217957598587
+pool3max|even10|GFN2-xTB/CPCM-X|mean,0.61067906204241
+neff|even10|GFN2-xTB/CPCM-X|mean,9.999999999999996
+pool5|even10|GFN2-xTB/CPCM-X|boltz,0.6069688321430351
+rho|even10|GFN2-xTB/CPCM-X|boltz,0.8360902255639097
+spread|even10|GFN2-xTB/CPCM-X|boltz,0.0890764271225481
+pool3min|even10|GFN2-xTB/CPCM-X|boltz,0.5664782792560095
+pool3max|even10|GFN2-xTB/CPCM-X|boltz,0.623919334483096
+neff|even10|GFN2-xTB/CPCM-X|boltz,1.0021359919423112
+pool5|even10|GFN2-xTB/CPCM-X|scatter,0.6009934601336883
+rho|even10|GFN2-xTB/CPCM-X|scatter,0.8105263157894737
+spread|even10|GFN2-xTB/CPCM-X|scatter,0.0756923146359951
+pool3min|even10|GFN2-xTB/CPCM-X|scatter,0.552195381749656
+pool3max|even10|GFN2-xTB/CPCM-X|scatter,0.6218461613344658
+neff|even10|GFN2-xTB/CPCM-X|scatter,6.130687588627014
+"pool5|even10|GFN2-xTB/CPCM-X, CDS removed|mean",0.6233659572986763
+"rho|even10|GFN2-xTB/CPCM-X, CDS removed|mean",0.8165413533834586
+"spread|even10|GFN2-xTB/CPCM-X, CDS removed|mean",0.0746874398895416
+"pool3min|even10|GFN2-xTB/CPCM-X, CDS removed|mean",0.5888892310491562
+"pool3max|even10|GFN2-xTB/CPCM-X, CDS removed|mean",0.6481392182376715
+"neff|even10|GFN2-xTB/CPCM-X, CDS removed|mean",9.999999999999996
+"pool5|even10|GFN2-xTB/CPCM-X, CDS removed|boltz",0.5966763089919913
+"rho|even10|GFN2-xTB/CPCM-X, CDS removed|boltz",0.8225563909774435
+"spread|even10|GFN2-xTB/CPCM-X, CDS removed|boltz",0.0300764057325613
+"pool3min|even10|GFN2-xTB/CPCM-X, CDS removed|boltz",0.5705122879338612
+"pool3max|even10|GFN2-xTB/CPCM-X, CDS removed|boltz",0.6113968709699161
+"neff|even10|GFN2-xTB/CPCM-X, CDS removed|boltz",1.0018392207473323
+"pool5|even10|GFN2-xTB/CPCM-X, CDS removed|scatter",0.6118413565986548
+"rho|even10|GFN2-xTB/CPCM-X, CDS removed|scatter",0.8225563909774435
+"spread|even10|GFN2-xTB/CPCM-X, CDS removed|scatter",0.0432957974773366
+"pool3min|even10|GFN2-xTB/CPCM-X, CDS removed|scatter",0.581943855214527
+"pool3max|even10|GFN2-xTB/CPCM-X, CDS removed|scatter",0.6277284057394096
+"neff|even10|GFN2-xTB/CPCM-X, CDS removed|scatter",5.560547898966727
+pool5|even10|GFN2-xTB/GBSA|mean,0.6791953097006744
+rho|even10|GFN2-xTB/GBSA|mean,0.8030075187969924
+spread|even10|GFN2-xTB/GBSA|mean,0.2229317013328403
+pool3min|even10|GFN2-xTB/GBSA|mean,0.6145301756822016
+pool3max|even10|GFN2-xTB/GBSA|mean,0.7250189659505575
+neff|even10|GFN2-xTB/GBSA|mean,9.999999999999996
+pool5|even10|GFN2-xTB/GBSA|boltz,0.6640347425760635
+rho|even10|GFN2-xTB/GBSA|boltz,0.8225563909774435
+spread|even10|GFN2-xTB/GBSA|boltz,0.2171186596669588
+pool3min|even10|GFN2-xTB/GBSA|boltz,0.5953112026508794
+pool3max|even10|GFN2-xTB/GBSA|boltz,0.7000177607286381
+neff|even10|GFN2-xTB/GBSA|boltz,1.00171243243443
+pool5|even10|GFN2-xTB/GBSA|scatter,0.6734616510297057
+rho|even10|GFN2-xTB/GBSA|scatter,0.813533834586466
+spread|even10|GFN2-xTB/GBSA|scatter,0.2387560308365027
+pool3min|even10|GFN2-xTB/GBSA|scatter,0.6083700720802209
+pool3max|even10|GFN2-xTB/GBSA|scatter,0.7110164789959155
+neff|even10|GFN2-xTB/GBSA|scatter,5.490641372027085
+pool5|even10|GFN2-xTB/ALPB|mean,0.6735683417285864
+rho|even10|GFN2-xTB/ALPB|mean,0.7999999999999999
+spread|even10|GFN2-xTB/ALPB|mean,0.2337017779431131
+pool3min|even10|GFN2-xTB/ALPB|mean,0.6168593412159572
+pool3max|even10|GFN2-xTB/ALPB|mean,0.7028392318405897
+neff|even10|GFN2-xTB/ALPB|mean,9.999999999999996
+pool5|even10|GFN2-xTB/ALPB|boltz,0.6368404221937808
+rho|even10|GFN2-xTB/ALPB|boltz,0.8105263157894737
+spread|even10|GFN2-xTB/ALPB|boltz,0.2039942244846355
+pool3min|even10|GFN2-xTB/ALPB|boltz,0.5713400649028045
+pool3max|even10|GFN2-xTB/ALPB|boltz,0.6630772668754409
+neff|even10|GFN2-xTB/ALPB|boltz,1.0008210178880728
+pool5|even10|GFN2-xTB/ALPB|scatter,0.6556046302744113
+rho|even10|GFN2-xTB/ALPB|scatter,0.7924812030075187
+spread|even10|GFN2-xTB/ALPB|scatter,0.2334667533100108
+pool3min|even10|GFN2-xTB/ALPB|scatter,0.601720067599405
+pool3max|even10|GFN2-xTB/ALPB|scatter,0.6838695475039267
+neff|even10|GFN2-xTB/ALPB|scatter,5.457118248230463
+pool5|even10|GFN2-xTB/ddCOSMO|mean,0.5662417077629645
+rho|even10|GFN2-xTB/ddCOSMO|mean,0.7503759398496239
+spread|even10|GFN2-xTB/ddCOSMO|mean,0.0993216974022299
+pool3min|even10|GFN2-xTB/ddCOSMO|mean,0.5425911674845418
+pool3max|even10|GFN2-xTB/ddCOSMO|mean,0.5795278152949692
+neff|even10|GFN2-xTB/ddCOSMO|mean,9.999999999999996
+pool5|even10|GFN2-xTB/ddCOSMO|boltz,0.5520948815248424
+rho|even10|GFN2-xTB/ddCOSMO|boltz,0.7353383458646616
+spread|even10|GFN2-xTB/ddCOSMO|boltz,0.0937008379229262
+pool3min|even10|GFN2-xTB/ddCOSMO|boltz,0.5158519813028044
+pool3max|even10|GFN2-xTB/ddCOSMO|boltz,0.5706293826235788
+neff|even10|GFN2-xTB/ddCOSMO|boltz,1.0006829143200404
+pool5|even10|GFN2-xTB/ddCOSMO|scatter,0.5609027851870325
+rho|even10|GFN2-xTB/ddCOSMO|scatter,0.7413533834586465
+spread|even10|GFN2-xTB/ddCOSMO|scatter,0.0757599455816667
+pool3min|even10|GFN2-xTB/ddCOSMO|scatter,0.5329993319009274
+pool3max|even10|GFN2-xTB/ddCOSMO|scatter,0.5756897941503261
+neff|even10|GFN2-xTB/ddCOSMO|scatter,5.432143972841189
+cpcmx_minus_gbsa_min,0.02649653805344021
+cpcmx_minus_gbsa_max,0.0887475799233135
+cpcmx_spread_min,0.0367531607181895
+cpcmx_spread_max,0.1083980768200892
+gbsa_spread_min,0.0833335090493806
+gbsa_spread_max,0.2229317013328403
+cpcmx_best_any_weight,0.651287915748612
+conductor_only_pool5|iface,0.6299625537773292
+postscf_only_pool5|iface,0.02785123218346374
+frame_offset_median|iface,26.064209339922662
+frame_offset_maxdev|iface,64.5727656045581
+conductor_only_pool5|aa,0.5949890331131742
+postscf_only_pool5|aa,0.07450572331891864
+frame_offset_median|aa,25.75731085167827
+frame_offset_maxdev|aa,55.76825224303768
+conductor_only_pool5|bb,0.5975928951936067
+postscf_only_pool5|bb,0.03240044388475936
+frame_offset_median|bb,26.354830128412658
+frame_offset_maxdev|bb,58.02459567350115
+conductor_only_pool5|contacts,0.5688471626515128
+postscf_only_pool5|contacts,0.030795080680495437
+frame_offset_median|contacts,26.114873825313598
+frame_offset_maxdev|contacts,68.80202898714074
+conductor_only_pool5|even10,0.5797219378090928
+postscf_only_pool5|even10,0.09798841670221163
+frame_offset_median|even10,25.68517040944686
+frame_offset_maxdev|even10,56.17494666872231
+frames_total,3527.0
+qc_species_repeated,1408.0
+qc_species_repeated_agree_first,1408.0
+qc_frames_ok,3527.0
+sys_r2_cpcmx,0.6355722062051136
+sys_r2_gbsa,0.6862204759291557
+off_cpcmx_mean,28.65608082350966
+off_cpcmx_sd,13.798161726799677
+off_cpcmx_min,11.270805758158772
+off_cpcmx_max,57.87728477266766
+off_cosmo_mean,-33.70497853213934
+off_cosmo_sd,14.349008449152212
+off_cosmo_min,-57.54987430307756
+off_cosmo_max,-5.165469276195058
+sb_r|cpcmx,0.6981121246382636
+sb_p|cpcmx,0.0006195084926801154
+sb_rho|cpcmx,0.6009778537075028
+sb_slope|cpcmx,9.43827208427194
+sb_r2|cpcmx,0.48736053856695044
+sb_r|cosmo,0.5162762040950565
+sb_p|cosmo,0.01978329495777392
+sb_rho|cosmo,0.4445280494882781
+sb_slope|cosmo,7.2585534758892285
+sb_r2|cosmo,0.2665411189148004
+sb_r|cond,0.6207081333366472
+sb_p|cond,0.003496196101659515
+sb_rho|cond,0.5077097011921958
+sb_slope|cond,6.692726022885079
+sb_r2|cond,0.385278586790265
+sb_r|post,0.36447414962794294
+sb_p|post,0.11412169394744595
+sb_rho|post,0.2640090446199418
+sb_slope|post,2.745546061386859
+sb_r2|post,0.13284140574701214
+partial_sb_slope|q_complex,7.743025550287101
+partial_sb_p|q_complex,0.014212736116837509
+partial_cov_p|q_complex,0.3281226809853903
+partial_sb_slope|outside_cpcmx_training,8.726827677191894
+partial_sb_p|outside_cpcmx_training,0.008065286884696323
+partial_cov_p|outside_cpcmx_training,0.6867584979680654
+partial_sb_slope|n_iface_charged,7.6608652894906335
+partial_sb_p|n_iface_charged,0.022998866699268386
+partial_cov_p|n_iface_charged,0.3936513752104135
+partial_sb_slope|n_atoms,9.866466570496376
+partial_sb_p|n_atoms,0.0009499818682416226
+partial_cov_p|n_atoms,0.6131676005058584
+partial_sb_slope|n_charged_res,8.062252590322272
+partial_sb_p|n_charged_res,0.007034645842145814
+partial_cov_p|n_charged_res,0.3121777494804028
+partial_sb_slope|charge_density,9.811543972497144
+partial_sb_p|charge_density,0.0006548541636563239
+partial_cov_p|charge_density,0.4516913311268442
+cosmo_sb_atoms_r2,0.7071627168963203
+cosmo_sb_atoms_sb_slope,10.58918910550613
+cosmo_sb_atoms_atom_slope,-0.054423185108493755
+cosmo_sb_atoms_sb_p,4.741466331588725e-05
+n_descriptors,19.0
+perm_p_single,0.0005499725013749313
+perm_p_familywise,0.011649417529123544
+r_sb_exp,-0.22043500390525703
+p_sb_exp,0.3503564053011946
+r_hb_exp,-0.6615278853763459
+p_hb_exp,0.0014904344361052406
+r_hb_gbsa,-0.7698142909174802
+r_hb_cpcmx,-0.5622939134617695
+r_off_exp,-0.10776670912427513
+r_off_gbsa,-0.35059376459917874
+r_outside_off,0.47303177809441777
+p_outside_off,0.03516619412922596
+r_density_extra,0.6158355913464606
+p_density_extra,0.00384120765987843
+r_gbsa_alpb_sys,0.9828047748827886
+r_gbsa_cpcmx_sys,0.8316439057817616
+r_gbsa_cosmo_sys,0.8717125672378572
+sys_gap,-0.05064826972404213
+loo_gap|1EMV,0.05175094320829532
+loo_gap|1AY7,-0.005426074130093439
+loo_gap|2OOB,0.012691024137400309
+sb_r_set|cpcmx|iface,0.7126359171203245
+sb_r_set|cosmo|iface,0.4987103928279059
+sb_r_set|cpcmx|aa,0.7384950371994258
+sb_r_set|cosmo|aa,0.5237758327434973
+sb_r_set|cpcmx|bb,0.6245547096795885
+sb_r_set|cosmo|bb,0.5113144119221212
+sb_r_set|cpcmx|contacts,0.6528556526535476
+sb_r_set|cosmo|contacts,0.5243204090447109
+sb_r_set|cpcmx|even10,0.7182331994663805
+sb_r_set|cosmo|even10,0.5108615893365135
+within_sb_r|cpcmx,0.14729823453757895
+within_sb_r|cosmo,0.2715361297076755
+sb_count|1AY7,2.7945493765493765
+extra_err|1AY7,2.5037690280306717
+sb_count|1EMV,2.817169312169312
+extra_err|1EMV,2.012338117850831
+sb_count|2OOB,0.0
+extra_err|2OOB,1.804541776288266
+sb_count|2HLE,3.2987445887445888
+extra_err|2HLE,-2.910596562219988
+sb_max,3.2987445887445888
+sb_min,0.0
+seconds_median_4threads,534.55
+bw_n_protocols,108.0
+bw_boltz_up,36.0
+bw_boltz_down,72.0
+bw_boltz_median_dr2,-0.014249999999999999
+bw_boltz_median_dspread,0.03215
+bw_boltz_wider,66.0
+bw_boltz_neff_max,1.01
+bw_pop_max_abs_dr2,0.1071
+bw_pop_median_dr2,-0.00424999999999999
+bw_boltz_median_dr2|GFN1,-0.0728
+bw_boltz_median_dr2|GFN2,-0.014950000000000019
+bw_boltz_median_dr2|MM,-0.08164999999999994
+bw_boltz_median_dr2|PM6,-0.0045499999999999985
+bw_boltz_median_dr2|PM7,-0.015850000000000003
+bw_mean|iface_sc|gfn2_gbsa,0.6972
+bw_boltz|iface_sc|gfn2_gbsa,0.7031
+bw_spread_mean|iface_sc|gfn2_gbsa,0.1435
+bw_spread_boltz|iface_sc|gfn2_gbsa,0.1463
+bw_mean|iface_sc|pm7_cosmo2,0.1139
+bw_boltz|iface_sc|pm7_cosmo2,0.3576
+bw_spread_mean|iface_sc|pm7_cosmo2,0.3524
+bw_spread_boltz|iface_sc|pm7_cosmo2,0.2181
+bw_mean|iface_sc|gfn1_gbsa,0.3656
+bw_boltz|iface_sc|gfn1_gbsa,0.0878
+bw_spread_mean|iface_sc|gfn1_gbsa,0.1639
+bw_spread_boltz|iface_sc|gfn1_gbsa,0.2742
+bw_mean|iface_sc|mmgbsa,0.6651
+bw_boltz|iface_sc|mmgbsa,0.593
+bw_spread_mean|iface_sc|mmgbsa,0.1374
+bw_spread_boltz|iface_sc|mmgbsa,0.2513
+bw_pop_max_abs_dr2|GFN2,0.013899999999999912
+gfn2_minus_gfn1_gbsa_alpb_min,0.24540437266111792
+gfn2_minus_gfn1_gbsa_alpb_max,0.31663503799173603
+gfn2_minus_gfn1_cosmo,0.10735764464430675
+cpcmx_resid|1EMV,-4.686003553379525
+cpcmx_z|1EMV,-2.5761423664234497
+cpcmx_resid|2HLE,-0.3826406341064974
+six_resid_2HLE_min,2.091372395594165
+six_resid_2HLE_max,3.155066370937604
+six_resid_1EMV_min,-3.466139415220109
+six_resid_1EMV_max,-2.7483261887755397
+cpcmx_even10_rho,0.8300751879699247
+cpcmx_aa_gain,0.02228739690362913

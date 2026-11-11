@@ -1,0 +1,6 @@
+family,n_arms,win_fraction,best_full_r2
+GFN2-xTB,36,0.6762,0.6972
+GFN1-xTB,27,0.028,0.4818
+PM6,91,0.0109,0.483
+PM7,10,0.0004,0.3499
+MM/GBSA,13,0.2844,0.6768

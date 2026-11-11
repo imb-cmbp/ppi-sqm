@@ -1,0 +1,15 @@
+quantity,value
+n_arms,177
+n_resamples,20000
+nominal_best_arm,GFN2_GBSA_basin_iface_sc_unw
+nominal_best_r2,0.6972176017436391
+nominal_best_share,0.0271
+top_share,0.1054
+optimism,0.08558900665827938
+n_within_002,10
+cpcmx_share,0.25555
+cpcmx_n_arms,9
+cpcmx_best_full_r2,0.6512879157486121
+cpcmx_share_with_1emv,0.1402925017410818
+cpcmx_share_without_1emv,0.4660166737318073
+share_without_1emv,0.35385

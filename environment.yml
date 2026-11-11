@@ -1,0 +1,16 @@
+name: ppi-sqm
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - numpy=2.4
+  - pandas=3.0
+  - scipy=1.17
+  - matplotlib=3.10
+  - pymol-open-source   # molecular panels and buried-surface interface masks
+  - propka              # protonation states (propka3)
+  - xtb=6.7.1
+# External programs, configured through environment variables (see scripts/paths.py):
+#   Amber 22 (AMBERHOME), MOPAC 23.2.3 (MOPAC_EXE), cuby4 (CUBY4_DIR, RUBY_BIN),
+#   MOPAC-ML with the PM6-ML model (MOPAC_ML_EXE, PM6ML_MODEL), CPCM-X (CPX_EXE, CPCMX_DB).
+# check_pm6ml_terms.py additionally needs torch, torchmd-net and dftd3-python.

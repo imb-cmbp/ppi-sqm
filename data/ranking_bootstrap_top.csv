@@ -1,0 +1,11 @@
+arm,full_r2,win_fraction
+MMGBSA_basin_iface_sc_wt,0.6768,0.1054
+GFN2_CPCMX_basin_contacts_wt,0.6489,0.0938
+MMGBSA_Nwat30,0.6532,0.0921
+GFN2_CPCMX_basin_iface_sc_wt,0.6493,0.0805
+GFN2_ALPB_basin_aa_wt,0.6867,0.0799
+MMGBSA_basin_iface_sc_unw,0.6651,0.0644
+GFN2_GBSA_basin_iface_sc_wt,0.6958,0.0568
+GFN2_GBSA_basin_aa_wt,0.6879,0.0566
+GFN2_GBSA_basin_bb_unw,0.6787,0.0394
+GFN2_GBSA_even10,0.6792,0.0302
