@@ -291,7 +291,7 @@ SQM_PRESETS = {
 }
 
 # Default launcher for the PM6-ML wrapper (drop-in MOPAC replacement)
-PM6_ML_EXE = os.environ.get("MOPAC_ML_EXE", "mopac-ml-cuby")
+from paths import MOPAC_ML_EXE as PM6_ML_EXE  # noqa: E402
 
 def write_modifier_blocks(f, preset):
     """Emit per-modifier settings blocks for a preset.

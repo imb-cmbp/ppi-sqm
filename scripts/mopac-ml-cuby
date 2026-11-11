@@ -1,0 +1,10 @@
+#!/bin/bash
+# MOPAC executable that cuby4 calls for the PM6-ML models. It runs the MOPAC-ML
+# wrapper (https://github.com/Honza-R/mopac-ml) with the Python of the environment
+# that holds torchmd-net, simple-dftd3 and dftd3-python. cuby4 starts it from a
+# non-interactive shell, where conda activate cannot be relied on.
+: "${MOPAC_ML_DIR:?set MOPAC_ML_DIR to the MOPAC-ML directory}"
+: "${PM6ML_PYTHON:?set PM6ML_PYTHON to the python of the PM6-ML environment}"
+unset LD_LIBRARY_PATH PYTHONPATH PYTHONHOME
+export PATH="$(dirname "$PM6ML_PYTHON"):$PATH"
+exec "$PM6ML_PYTHON" "$MOPAC_ML_DIR/mopac-ml" "$@"

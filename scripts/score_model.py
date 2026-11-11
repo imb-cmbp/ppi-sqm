@@ -4,53 +4,58 @@
 The structure is a PDB with two partners: chain A is partner A and any
 interfacial waters, chain B is partner B. The interaction energy is
 E(AB) - E(A) - E(B) in kcal/mol, the same definition as in the paper.
+GFN-xTB models run xtb directly; PM6, PM7 and PM6-ML models run MOPAC through cuby4.
 
 Examples
 --------
 python scripts/score_model.py --list
-python scripts/score_model.py --pdb structures/capped_model_1ACB.pdb --model gfn2-gbsa
-python scripts/score_model.py --pdb model.pdb --model gfn2-alpb --charge-a 1 --charge-b -2
+python scripts/score_model.py --pdb structures/capped_model_1ACB.pdb --model gfn2_gbsa
+python scripts/score_model.py --pdb structures/capped_model_1ACB.pdb --model pm6_d3h4x_cosmo2
+python scripts/score_model.py --pdb model.pdb --model pm6_d3h4_cosmo_nofc --charge-a 1 --charge-b -2
 """
 from __future__ import annotations
 
 import argparse
 import json
+import math
+import os
 import shutil
 import sys
 from pathlib import Path
 
+import cuby_jobs as QM
+import score_mopac as S
 import score_xtb
 import truncate_interface as TI
 import xtb_runner as X
-from cuby_jobs import fragment_nuclear_charges
+from common import parse_interaction_energy, safe_run
+from interaction import SQM_PRESETS
+from protocol_names import protocol_display_name
 
-# Friendly name -> key in score_xtb.VARIANTS. CPCM-X is omitted: the paper used
-# the standalone CPCM-X program, not the --cpcmx flag built into xtb.
-MODELS = {
-    "gfn2-gbsa": "gfn2_gbsa",
-    "gfn2-alpb": "gfn2_alpb",
-    "gfn2-ddcosmo": "gfn2_cosmo",
-    "gfn2-gas": "gfn2_gas",
-    "gfn1-gbsa": "gfn1_gbsa",
-    "gfn1-alpb": "gfn1_alpb",
-    "gfn1-ddcosmo": "gfn1_cosmo",
-}
+# The energy models scored in the paper (workflow/02_score.sh). CPCM-X is not here:
+# it was computed with the standalone CPCM-X program (workflow/03_cpcmx.sh).
+XTB_MODELS = ["gfn2_gbsa", "gfn2_alpb", "gfn2_cosmo", "gfn1_gbsa", "gfn1_alpb", "gfn1_cosmo"]
+MOPAC_MODELS = [
+    "pm6_d3h4_cosmo_nofc", "pm6_d3h4_cosmo_cuby", "pm6_d3h4_cosmo", "pm6_d3h4s_cosmo",
+    "pm6_d3h4s_cosmo2", "pm6_d3h4x_cosmo2", "pm6_d3h4paren_cosmo", "pm6_d3_cosmo",
+    "pm6_h4_cosmo_cuby", "pm6_dh2_cosmo", "pm6_dhplus_cosmo", "pm6_dhplus_cosmo2",
+    "pm6_cosmo", "pm6_cosmo2", "pm6_d3h4x", "pm7", "pm7_cosmo2",
+    "pm6_ml", "pm6_ml_cosmo", "pm6_ml_cosmo2",
+]
+MODELS = {name: "xtb" for name in XTB_MODELS} | {name: "MOPAC" for name in MOPAC_MODELS}
 
-LABELS = {
-    "gfn2-gbsa": "GFN2-xTB/GBSA",
-    "gfn2-alpb": "GFN2-xTB/ALPB",
-    "gfn2-ddcosmo": "GFN2-xTB/ddCOSMO",
-    "gfn2-gas": "GFN2-xTB, gas phase",
-    "gfn1-gbsa": "GFN1-xTB/GBSA",
-    "gfn1-alpb": "GFN1-xTB/ALPB",
-    "gfn1-ddcosmo": "GFN1-xTB/ddCOSMO",
-}
+# Written into every work directory so that a rerun only ever deletes its own files.
+MARKER = ".score_model"
+
+
+def label(name):
+    return protocol_display_name(name.upper(), omit_even10=True)
 
 
 def list_models():
     width = max(len(name) for name in MODELS)
-    for name in MODELS:
-        print(f"{name:{width}}  {LABELS[name]}")
+    for name, program in MODELS.items():
+        print(f"{name:{width}}  {program:5}  {label(name)}")
 
 
 def _residues(pdb_path):
@@ -81,7 +86,7 @@ def charges_from_pdb(pdb_path):
             f"{pdb_path}: need chain A (partner A and waters) and chain B (partner B)")
     charge_a = TI._partner_charge(chain_a)
     charge_b = TI._partner_charge(chain_b)
-    sum_z_a, sum_z_b = fragment_nuclear_charges(pdb_path)
+    sum_z_a, sum_z_b = QM.fragment_nuclear_charges(pdb_path)
     if sum_z_a is None:
         raise SystemExit(
             f"{pdb_path}: an element has no nuclear charge in the table; "
@@ -106,28 +111,95 @@ def charges_from_sidecar(pdb_path):
     return None
 
 
-def resolve_xtb():
-    """Point xtb_runner at a real executable without changing its default for other scripts."""
-    if Path(X.XTB_EXE).is_file():
-        return
-    found = shutil.which("xtb")
-    if found:
-        X.XTB_EXE = Path(found)
-        return
-    raise SystemExit(
-        "xtb was not found. Install xtb 6.7.1 and set XTB_HOME to the prefix "
-        "that contains bin/xtb and share/xtb, or put xtb on PATH.")
+def _found(exe):
+    return bool(exe) and (Path(exe).is_file() or shutil.which(str(exe)) is not None)
 
 
-def score(pdb_path, model, charge_a, charge_b, workdir, threads):
-    variant = MODELS[model]
-    gfn, solvent, solvation = score_xtb.VARIANTS[variant]
-    workdir.mkdir(parents=True, exist_ok=True)
+def check_programs(model):
+    """Stop with an installation hint when a program the model needs is missing."""
+    missing = []
+    if MODELS[model] == "xtb":
+        if not Path(X.XTB_EXE).is_file():
+            missing.append("xtb 6.7.1: install it (it is in environment.yml) or set "
+                           "XTB_HOME to the prefix that contains bin/xtb")
+    else:
+        if not (Path(S.CUBY4_DIR, "cuby4").is_file() or _found("cuby4")):
+            missing.append("cuby4: download it from http://cuby4.molecular.cz and set "
+                           "CUBY4_DIR to the directory that contains the cuby4 script")
+        if not ((S.RUBY_BIN and Path(S.RUBY_BIN, "ruby").is_file()) or _found("ruby")):
+            missing.append("Ruby, which runs cuby4: put ruby on PATH or set RUBY_BIN "
+                           "to its bin directory")
+        exe = QM.resolve_mopac_exe(model, S.MOPAC_PATH)
+        if not _found(exe):
+            var = "MOPAC_ML_EXE" if SQM_PRESETS[model].get("is_pm6_ml") else "MOPAC_EXE"
+            missing.append(f"{exe}: set {var} to the executable")
+        elif Path(exe).name == "mopac-ml-cuby":
+            ml_dir = os.environ.get("MOPAC_ML_DIR", "")
+            ml_py = os.environ.get("PM6ML_PYTHON", "")
+            if not Path(ml_dir, "mopac-ml").is_file():
+                missing.append("MOPAC-ML: clone https://github.com/Honza-R/mopac-ml and set "
+                               "MOPAC_ML_DIR to that directory")
+            if not _found(ml_py):
+                missing.append("PM6-ML Python: set PM6ML_PYTHON to the python of the "
+                               "environment with torchmd-net, simple-dftd3 and dftd3-python")
+    if missing:
+        raise SystemExit(f"Cannot run {model}:\n  " + "\n  ".join(missing))
+
+
+def prepare_workdir(workdir):
+    if workdir.exists() and any(workdir.iterdir()) and not (workdir / MARKER).exists():
+        raise SystemExit(f"{workdir} exists and was not created by score_model.py; "
+                         "pass another --workdir")
+    if workdir.exists():
+        shutil.rmtree(workdir)
+    workdir.mkdir(parents=True)
+    (workdir / MARKER).touch()
+
+
+def score_xtb_model(pdb_path, model, charge_a, charge_b, workdir, threads):
+    gfn, solvent, solvation = score_xtb.VARIANTS[model]
     energy, status = X.interaction_energy(
         pdb_path, workdir, charge_a, charge_b,
-        solvent=solvent, gfn=gfn, threads=threads,
-        solvation=solvation or "alpb")
+        solvent=solvent, gfn=gfn, threads=threads, solvation=solvation or "alpb")
     return energy, status
+
+
+def score_mopac_model(pdb_path, model, charge_a, charge_b, workdir, threads):
+    """cuby4 interaction job with the charge search of score_mopac.py.
+
+    MOZYME may reject a formal charge in favour of the charge of its own Lewis
+    structure; the charges it reports are used for the next attempt.
+    """
+    geom = workdir / "geom.pdb"
+    shutil.copy(pdb_path, geom)
+    sum_z_a, sum_z_b = QM.fragment_nuclear_charges(geom)
+    sum_z = None if sum_z_a is None else sum_z_a + sum_z_b
+    env = S.sqm_thread_env(threads)
+    yaml_f = workdir / "interaction.yaml"
+    known, tried = {}, set()
+    status = "no charge pair was accepted by MOPAC"
+    while True:
+        guess = QM.next_charge_guess(charge_a, charge_b, sum_z, known, tried,
+                                     sum_z_a, sum_z_b)
+        if guess is None:
+            return None, status
+        if tried:
+            S._clean_workdir(workdir, keep=("geom.pdb", MARKER))
+        tried.add(guess)
+        QM.write_interaction_yaml(yaml_f, geom, model, S.MOPAC_PATH, threads, *guess)
+        out, err, code = safe_run(f"cuby4 {yaml_f.name}", workdir, env)
+        (workdir / "cuby4.log").write_text(out + err)
+        if code == 0:
+            energy = parse_interaction_energy(out)
+            if math.isnan(energy):
+                return None, "cuby4 printed no interaction energy"
+            if guess == (charge_a, charge_b):
+                return energy, "ok"
+            return energy, f"ok with charges A={guess[0]}, B={guess[1]}"
+        status = f"cuby4 exited with code {code}"
+        if not S._sqm_retryable(err):
+            return None, status
+        known.update(QM.mozyme_computed_charges(workdir))
 
 
 def main():
@@ -135,14 +207,15 @@ def main():
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--list", action="store_true", help="print the model names and exit")
     ap.add_argument("--pdb", help="capped interface PDB (chain A, chain B)")
-    ap.add_argument("--model", choices=sorted(MODELS), help="semiempirical model")
+    ap.add_argument("--model", choices=list(MODELS), metavar="MODEL",
+                    help="energy model, see --list")
     ap.add_argument("--charge-a", type=int, default=None, help="formal charge of chain A")
     ap.add_argument("--charge-b", type=int, default=None, help="formal charge of chain B")
-    ap.add_argument("--threads", type=int, default=1, help="OpenMP threads for xtb")
+    ap.add_argument("--threads", type=int, default=1, help="threads for xtb or MOPAC")
     ap.add_argument("--workdir", type=Path, default=None,
-                    help="directory for the xtb inputs and logs (default: ./score_<model>)")
+                    help="directory for inputs and logs (default: ./score_<pdb>_<model>)")
     ap.add_argument("--charges-only", action="store_true",
-                    help="print the partner charges and do not run xtb")
+                    help="print the partner charges and do not run the calculation")
     args = ap.parse_args()
 
     if args.list:
@@ -154,9 +227,9 @@ def main():
     if given == (True, False) or given == (False, True):
         ap.error("pass both --charge-a and --charge-b, or neither")
 
-    pdb_path = Path(args.pdb)
+    pdb_path = Path(args.pdb).resolve()
     if not pdb_path.is_file():
-        raise SystemExit(f"no such file: {pdb_path}")
+        raise SystemExit(f"no such file: {args.pdb}")
 
     source = "command line"
     if given == (True, True):
@@ -170,23 +243,24 @@ def main():
             charge_a, charge_b = charges_from_pdb(pdb_path)
             source = "residue names and chain termini in the PDB"
 
-    print(f"model:    {LABELS[args.model]}")
-    print(f"pdb:      {pdb_path}")
+    print(f"model:    {args.model} ({label(args.model)})")
+    print(f"pdb:      {args.pdb}")
     print(f"charge_A: {charge_a}")
     print(f"charge_B: {charge_b}")
     print(f"charges:  {source}")
     if args.charges_only:
         return
 
-    resolve_xtb()
-    workdir = args.workdir or Path(f"score_{args.model}")
-    energy, status = score(pdb_path, args.model, charge_a, charge_b, workdir, args.threads)
+    check_programs(args.model)
+    workdir = (args.workdir or Path(f"score_{pdb_path.stem}_{args.model}")).resolve()
+    prepare_workdir(workdir)
+    run = score_xtb_model if MODELS[args.model] == "xtb" else score_mopac_model
+    energy, status = run(pdb_path, args.model, charge_a, charge_b, workdir, args.threads)
     print(f"status:   {status}")
+    print(f"logs:     {workdir}")
     if energy is None:
-        print(f"xtb logs: {workdir}")
         raise SystemExit(1)
     print(f"energy:   {energy:.4f} kcal/mol")
-    print(f"xtb logs: {workdir}")
 
 
 if __name__ == "__main__":

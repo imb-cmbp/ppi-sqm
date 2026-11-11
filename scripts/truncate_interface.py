@@ -601,6 +601,42 @@ def expand_resids_chemistry(partners, resids):
     return {int(r["resid"]) for r in aa_a + aa_b if id(r) in sel}
 
 
+def _snapshot_protein_res_count(snapshot_pdb):
+    """Highest protein residue serial in a cpptraj snapshot (waters/ions excluded)."""
+    max_res = 0
+    skip = WATER_RESNAMES | {"NA", "CL", "ACE", "NME"}
+    with open(snapshot_pdb) as f:
+        for line in f:
+            if not line.startswith(("ATOM", "HETATM")):
+                continue
+            resname = line[17:20].strip().upper()
+            if resname in skip:
+                continue
+            try:
+                max_res = max(max_res, int(line[22:26]))
+            except ValueError:
+                pass
+    return max_res
+
+
+def resolve_snapshot_chain_split(snapshot, input_pdb):
+    """Map the input-PDB chain A length onto a cpptraj snapshot's residue numbering.
+
+    A snapshot can contain fewer protein residues than the input PDB, so the
+    chain A residue count of the input is scaled by the ratio of protein residue
+    counts (snapshot vs input complex). Returns (n_chain_a, protein_res_count).
+    """
+    from common import get_first_chain_nres, get_protein_residue_count
+    nA_in = get_first_chain_nres(input_pdb)
+    prot_in = get_protein_residue_count(input_pdb)
+    prot_snap = _snapshot_protein_res_count(snapshot)
+    if prot_in <= 0 or prot_snap <= 1:
+        return nA_in, prot_in
+    nA = int(round(nA_in * prot_snap / prot_in))
+    nA = max(1, min(nA, prot_snap - 1))
+    return nA, prot_snap
+
+
 def _residue_terminal_charge(resrec):
     """Formal charge of a real chain terminus retained in the truncated shell.
 
@@ -803,10 +839,14 @@ def main():
     ap.add_argument("--pdb", required=True, help="dry_f*/wet_f* snapshot PDB")
     ap.add_argument("--out", required=True, help="output capped interface PDB")
     ap.add_argument("--cutoff", type=float, default=8.0, help="heavy-atom cutoff (A)")
-    g = ap.add_mutually_exclusive_group(required=True)
-    g.add_argument("--input-pdb", help="original input PDB to derive the A/B split")
+    ap.add_argument("--input-pdb", help="original input PDB to derive the A/B split")
     ap.add_argument("--n-chain-a", type=int, help="residues in partner A")
     ap.add_argument("--protein-res-count", type=int, help="total protein residues")
+    ap.add_argument("--dasa-resids",
+                    help="select these interface residues instead of the distance cutoff: "
+                         "a cpptraj mask such as :37,38,40-45, or a JSON file with a "
+                         "'resids' list as written by interface_dasa.py")
+    ap.add_argument("--max-waters", type=int, help="keep at most this many interfacial waters")
     ap.add_argument("--mobile-sidechains", action="store_true",
                     help="tag side-chain + water atoms as mobile (for SQM optimize)")
     ap.add_argument("--no-waters", action="store_true", help="drop waters even if present")
@@ -814,10 +854,22 @@ def main():
                     help="anchor interfacial waters on POLAR interface residues only")
     args = ap.parse_args()
 
+    dasa_resids = None
+    if args.dasa_resids:
+        mask = args.dasa_resids
+        if Path(mask).is_file():
+            dasa_resids = set(json.loads(Path(mask).read_text())["resids"])
+        else:
+            dasa_resids = set()
+            for part in mask.lstrip(":").split(","):
+                lo, _, hi = part.strip().partition("-")
+                if lo:
+                    dasa_resids.update(range(int(lo), int(hi or lo) + 1))
+        if not dasa_resids:
+            ap.error(f"--dasa-resids {mask!r} selects no residues")
+
     if args.input_pdb:
-        from common import get_first_chain_nres, get_protein_residue_count
-        n_chain_a = get_first_chain_nres(args.input_pdb)
-        protein_res_count = get_protein_residue_count(args.input_pdb)
+        n_chain_a, protein_res_count = resolve_snapshot_chain_split(args.pdb, args.input_pdb)
     else:
         if args.n_chain_a is None or args.protein_res_count is None:
             ap.error("provide --input-pdb OR both --n-chain-a and --protein-res-count")
@@ -826,7 +878,8 @@ def main():
     stats = truncate(
         args.pdb, args.out, n_chain_a, protein_res_count, args.cutoff,
         mobile_sidechains=args.mobile_sidechains, keep_waters=not args.no_waters,
-        polar_waters=args.polar_waters,
+        max_waters=args.max_waters, polar_waters=args.polar_waters,
+        interface_mode="dasa" if dasa_resids else "distance", dasa_resids=dasa_resids,
     )
     print(f"A/B split: n_chain_a={n_chain_a} protein_res_count={protein_res_count}")
     print(f"Wrote {args.out}: {stats}")

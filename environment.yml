@@ -7,10 +7,24 @@ dependencies:
   - pandas=3.0
   - scipy=1.17
   - matplotlib=3.10
-  - pymol-open-source   # molecular panels and buried-surface interface masks
-  - propka              # protonation states (propka3)
-  - xtb=6.7.1
-# External programs, configured through environment variables (see scripts/paths.py):
-#   Amber 22 (AMBERHOME), MOPAC 23.2.3 (MOPAC_EXE), cuby4 (CUBY4_DIR, RUBY_BIN),
-#   MOPAC-ML with the PM6-ML model (MOPAC_ML_EXE, PM6ML_MODEL), CPCM-X (CPX_EXE, CPCMX_DB).
-# check_pm6ml_terms.py additionally needs torch, torchmd-net and dftd3-python.
+  - pymol-open-source   # buried-surface interface masks and molecular images
+  - xtb=6.7.1           # GFN1-xTB and GFN2-xTB with GBSA, ALPB and ddCOSMO
+  - cpcm-x=1.1.0        # cpx, for GFN2-xTB/CPCM-X
+  - mopac=23.2.3        # PM6 and PM7 (MOZYME), run through cuby4
+  - ruby=3.4            # interpreter that runs cuby4
+# Not installable from this file; install separately and point the environment
+# variables in scripts/paths.py at them:
+#   cuby4 (CUBY4_DIR): download from http://cuby4.molecular.cz, unpack, and set
+#     CUBY4_DIR to the directory that contains the cuby4 script. Needed for every
+#     PM6, PM7 and PM6-ML model.
+#   AmberTools (AMBERHOME): cpptraj, tleap, sander, parmed and MMPBSA.py, used to read
+#     the trajectories, cluster them, and run Nwat-MM/GBSA and the MM/GB-minimised
+#     control. Free and open source: https://ambermd.org/AmberTools.php
+#     (the paper used Amber 22).
+#   MOPAC-ML for the PM6-ML models: clone https://github.com/Honza-R/mopac-ml (MOPAC_ML_DIR)
+#     and create its own environment with torchmd-net, simple-dftd3 and dftd3-python
+#     (PM6ML_PYTHON is the python of that environment).
+#   CPCM-X parameter files (CPCMX_DB): clone https://github.com/grimme-lab/CPCM-X and
+#     set CPCMX_DB to its DB/xtb directory.
+# Molecular dynamics is not part of this repository. The scoring starts from existing
+# Amber topologies and trajectories, or from capped interface models in PDB format.

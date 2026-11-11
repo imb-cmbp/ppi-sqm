@@ -1,9 +1,17 @@
 #!/usr/bin/env bash
 # Nwat-MM/GBSA, frame extraction, clustering and PM6/PM7/xTB scoring for one or more
 # trajectory sets.  Usage: workflow/02_score.sh r1 [r2 ...]
+# Reads $PPISQM_WORK/md/systems_propka_<rep>/<ID>/<ID>_complex_wat.top and .prod1-4.mdcrd.
+# Choose models with MOPAC_MODELS and XTB_MODELS (space-separated names from
+# scripts/score_model.py --list); XTB_MODELS=none skips xTB. The xTB step scores the
+# capped models written by the MOPAC step, so MOPAC_MODELS needs at least one model.
 # Re-running is safe: finished cuby4/xtb jobs are read from cache.
 set -euo pipefail
 cd "$(dirname "$0")/.."
+if [ $# -eq 0 ]; then
+  echo "usage: [MOPAC_MODELS=\"...\"] [XTB_MODELS=\"...\"] $0 r1 [r2 ...]" >&2
+  exit 1
+fi
 PY=${PY:-python3}
 WORK=${PPISQM_WORK:-$PWD/work}
 SCR="$WORK/screening_ff_md_sqm"
@@ -15,6 +23,9 @@ PM6_PRESETS=(
   pm6_cosmo pm6_cosmo2 pm6_d3h4x pm7 pm7_cosmo2 pm6_ml pm6_ml_cosmo pm6_ml_cosmo2
 )
 XTB_VARIANTS=(gfn2_alpb gfn2_gbsa gfn2_cosmo gfn1_alpb gfn1_gbsa gfn1_cosmo)
+if [ -n "${MOPAC_MODELS:-}" ]; then read -r -a PM6_PRESETS <<< "$MOPAC_MODELS"; fi
+if [ -n "${XTB_MODELS:-}" ]; then read -r -a XTB_VARIANTS <<< "$XTB_MODELS"; fi
+[ "${XTB_VARIANTS[*]}" = none ] && XTB_VARIANTS=()
 PM6_WORKERS=${PM6_WORKERS:-72}
 ML_WORKERS=${ML_WORKERS:-8}
 XTB_WORKERS=${XTB_WORKERS:-72}
@@ -34,6 +45,7 @@ score_pm6() {  # score_pm6 <snapshot tree> <output dir> <trajectory>
 }
 
 score_xtb() {  # score_xtb <PM6 output dir holding the capped models> <output dir>
+  [ ${#XTB_VARIANTS[@]} -eq 0 ] && return 0
   mkdir -p "$2"
   $PY -u scripts/score_xtb.py --shell-base "$1" --out-base "$2" \
     --cutoff c8 --hydration wet --auto-frames --variants "${XTB_VARIANTS[@]}" \

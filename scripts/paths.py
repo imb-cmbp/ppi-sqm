@@ -6,6 +6,7 @@ for example ``PPISQM_WORK=/scratch/ppi python scripts/harvest_scores.py``.
 from __future__ import annotations
 
 import os
+import shutil
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -17,6 +18,12 @@ def _path(name: str, default: Path) -> Path:
 
 def _exe(name: str, default: str) -> str:
     return os.environ.get(name, default)
+
+
+def _prefix_of(exe: str, default: Path) -> Path:
+    """Installation prefix of an executable on PATH (``<prefix>/bin/<exe>``)."""
+    found = shutil.which(exe)
+    return Path(found).parent.parent if found else default
 
 
 # Result tables shipped with the repository and read by the analysis scripts.
@@ -34,12 +41,11 @@ CHAIN_REF = _path("PPISQM_CHAIN_REF", ROOT / "structures" / "chain_reference")
 
 AMBERHOME = _path("AMBERHOME", Path("/opt/amber22"))
 MOPAC_EXE = _exe("MOPAC_EXE", "mopac")
-MOPAC_ML_EXE = _exe("MOPAC_ML_EXE", "mopac-ml-cuby")
+MOPAC_ML_EXE = _exe("MOPAC_ML_EXE", str(ROOT / "scripts" / "mopac-ml-cuby"))
 PM6ML_MODEL = _exe("PM6ML_MODEL", "PM6-ML_correction_seed8_best.ckpt")
 CUBY4_DIR = _path("CUBY4_DIR", Path.home() / "cuby4")
 RUBY_BIN = _exe("RUBY_BIN", "")
-XTB_HOME = _path("XTB_HOME", Path("/usr/local"))
+XTB_HOME = _path("XTB_HOME", _prefix_of("xtb", Path("/usr/local")))
 CPX_EXE = _exe("CPX_EXE", "cpx")
 CPCMX_DB = _path("CPCMX_DB", Path.home() / "CPCM-X" / "DB" / "xtb")
 PYMOL_EXE = _exe("PYMOL_EXE", "pymol")
-PROPKA_EXE = _exe("PROPKA_EXE", "propka3")

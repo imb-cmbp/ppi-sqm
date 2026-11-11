@@ -33,10 +33,3 @@ def amber_env(gpu_id=None, extra_path=None):
 
 def amber_bin(name):
     return str(AMBER_HOME / "bin" / name)
-
-
-def gpu_engine():
-    cuda = AMBER_HOME / "bin" / "pmemd.cuda"
-    if cuda.exists():
-        return str(cuda)
-    return str(AMBER_HOME / "bin" / "pmemd")

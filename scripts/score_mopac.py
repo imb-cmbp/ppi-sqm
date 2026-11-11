@@ -167,39 +167,7 @@ def score_from_log(log_path):
 SIDECAR_VERSION = 8
 
 
-def _snapshot_protein_res_count(snapshot_pdb):
-    """Highest protein residue serial in a cpptraj snapshot (waters/ions excluded)."""
-    max_res = 0
-    skip = TI.WATER_RESNAMES | {"NA", "CL", "ACE", "NME"}
-    with open(snapshot_pdb) as f:
-        for line in f:
-            if not line.startswith(("ATOM", "HETATM")):
-                continue
-            resname = line[17:20].strip().upper()
-            if resname in skip:
-                continue
-            try:
-                max_res = max(max_res, int(line[22:26]))
-            except ValueError:
-                pass
-    return max_res
-
-
-def resolve_snapshot_chain_split(snapshot_dry, input_pdb):
-    """Map the input-PDB chain A length onto a cpptraj snapshot's residue numbering.
-
-    A snapshot can contain fewer protein residues than the input PDB, so the
-    chain A residue count of the input is scaled by the ratio of protein residue
-    counts (dry snapshot vs input complex). Returns (n_chain_a, protein_res_count).
-    """
-    nA_in = get_first_chain_nres(input_pdb)
-    prot_in = get_protein_residue_count(input_pdb)
-    prot_snap = _snapshot_protein_res_count(snapshot_dry)
-    if prot_in <= 0 or prot_snap <= 1:
-        return nA_in, prot_in
-    nA = int(round(nA_in * prot_snap / prot_in))
-    nA = max(1, min(nA, prot_snap - 1))
-    return nA, prot_snap
+resolve_snapshot_chain_split = TI.resolve_snapshot_chain_split
 
 
 def _sidecar_ok(capped_pdb, polar_waters=False, interface_mode="distance",
