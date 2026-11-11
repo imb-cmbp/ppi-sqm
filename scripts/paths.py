@@ -36,6 +36,10 @@ WORK = _path("PPISQM_WORK", ROOT / "work")
 BENCHMARK = _path("PPISQM_BENCHMARK", ROOT / "benchmark" / "data_for_PPI_Nwat_MMGBSA")
 # Parameters for the backbone cap residues (BNC, BCC, BCG, BCB).
 CAP_PARAMS = _path("PPISQM_CAP_PARAMS", ROOT / "params" / "caps")
+# PyMOL InterfaceResidues script (Jason Vertrees, 2009), used for dASA masks.
+INTERFACE_PML = _path("PPISQM_INTERFACE_PML", ROOT / "params" / "interface.pymol")
+# Cached dASA residue masks (JSON). The twenty of the paper are shipped here.
+MASK_DIR = _path("PPISQM_MASK_DIR", ROOT / "data" / "interface_masks")
 # Input complexes whose chain boundaries define partners A and B.
 CHAIN_REF = _path("PPISQM_CHAIN_REF", ROOT / "structures" / "chain_reference")
 

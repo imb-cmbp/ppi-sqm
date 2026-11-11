@@ -2,10 +2,14 @@
 # Nwat-MM/GBSA, frame extraction, clustering and PM6/PM7/xTB scoring for one or more
 # trajectory sets.  Usage: workflow/02_score.sh r1 [r2 ...]
 # Reads $PPISQM_WORK/md/systems_propka_<rep>/<ID>/<ID>_complex_wat.top and .prod1-4.mdcrd.
-# Choose models with MOPAC_MODELS and XTB_MODELS (space-separated names from
-# scripts/score_model.py --list); XTB_MODELS=none skips xTB. The xTB step scores the
-# capped models written by the MOPAC step, so MOPAC_MODELS needs at least one model.
-# Re-running is safe: finished cuby4/xtb jobs are read from cache.
+# For a single complex, scripts/select_frames.py (even10 or basin) plus
+# truncate_interface.py and score_model.py are enough; this script is the batch
+# reproduction of the paper. Choose models with MOPAC_MODELS and XTB_MODELS
+# (space-separated names from scripts/score_model.py --list); XTB_MODELS=none skips
+# xTB. The xTB step scores the capped models written by the MOPAC step, so
+# MOPAC_MODELS needs at least one model. Water selection uses the polar dASA mask
+# and at most 20 waters in every capped model (score_mopac --max-waters 20
+# --polar-waters). Re-running is safe: finished cuby4/xtb jobs are read from cache.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 if [ $# -eq 0 ]; then

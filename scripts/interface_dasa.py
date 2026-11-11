@@ -12,13 +12,12 @@ import json
 import subprocess
 from pathlib import Path
 
-from paths import BENCHMARK, PYMOL_EXE, WORK
+from paths import BENCHMARK, INTERFACE_PML, MASK_DIR, PYMOL_EXE, WORK
 
 REPO = WORK
 ART = BENCHMARK
 COMPLEXES = ART / "complexes"
-INTERFACE_PML = ART / "protocol" / "interface.pymol"
-CACHE_DIR = REPO / "interface_masks"
+CACHE_DIR = MASK_DIR
 PYMOL = PYMOL_EXE
 
 POLAR_RESNAMES = {

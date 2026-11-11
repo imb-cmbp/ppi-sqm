@@ -619,6 +619,88 @@ def _snapshot_protein_res_count(snapshot_pdb):
     return max_res
 
 
+def assign_waters_nearer(pdb_in, pdb_out):
+    """Rewrite chain IDs so each water belongs to the nearer protein partner.
+
+    For every water residue (HOH/WAT/...), the oxygen-to-heavy-atom minimum
+    distance is taken over the protein and cap atoms of each partner; the water
+    goes to the closer partner and ties stay with A. Only the chain-ID column
+    changes, so atom order, coordinates, charges and the water selection itself
+    are unchanged. Used by the nearer-partner test of Supporting Information S7.
+    """
+    lines = Path(pdb_in).read_text().splitlines(keepends=True)
+    heavy = {"A": [], "B": []}
+    waters = {}
+    order = []
+    for i, ln in enumerate(lines):
+        if not ln.startswith(("ATOM", "HETATM")):
+            continue
+        el = (ln[76:78].strip() or ln[12:16].strip()[:1]).upper()
+        xyz = (float(ln[30:38]), float(ln[38:46]), float(ln[46:54]))
+        resname = ln[17:20].strip().upper()
+        if resname in WATER_RESNAMES:
+            key = ln[21:27]
+            if key not in waters:
+                waters[key] = {"idx": [], "O": None}
+                order.append(key)
+            waters[key]["idx"].append(i)
+            if el == "O":
+                waters[key]["O"] = xyz
+            continue
+        if el != "H":
+            heavy[ln[21] if ln[21] in "AB" else "A"].append(xyz)
+    if not heavy["A"] or not heavy["B"]:
+        raise ValueError(f"{pdb_in}: need protein atoms on both chain A and chain B")
+    ha = np.array(heavy["A"])
+    hb = np.array(heavy["B"])
+    n_to_b = 0
+    for key in order:
+        o = waters[key]["O"]
+        if o is None:
+            o = (float(lines[waters[key]["idx"][0]][30:38]),
+                 float(lines[waters[key]["idx"][0]][38:46]),
+                 float(lines[waters[key]["idx"][0]][46:54]))
+        o = np.asarray(o)
+        da = float(np.sqrt(((ha - o) ** 2).sum(1).min()))
+        db = float(np.sqrt(((hb - o) ** 2).sum(1).min()))
+        if db < da:
+            n_to_b += 1
+            for i in waters[key]["idx"]:
+                ln = lines[i]
+                lines[i] = ln[:21] + "B" + ln[22:]
+    Path(pdb_out).write_text("".join(lines))
+    return {"n_waters": len(order), "n_waters_b": n_to_b,
+            "n_waters_a": len(order) - n_to_b}
+
+
+def trim_waters(pdb_in, pdb_out, max_waters):
+    """Keep only the first ``max_waters`` water residues, in file order.
+
+    The capped models of the paper list waters by bridging rank, so trimming
+    to N keeps the N highest-ranked waters.
+    """
+    lines = Path(pdb_in).read_text().splitlines(keepends=True)
+    out, kept, current = [], 0, None
+    for ln in lines:
+        if ln.startswith(("ATOM", "HETATM")):
+            resname = ln[17:20].strip().upper()
+            key = ln[21:27]
+            if resname in WATER_RESNAMES:
+                if key != current:
+                    current = key
+                    if kept >= max_waters:
+                        current = None
+                        continue
+                    kept += 1
+                elif current is None:
+                    continue
+            else:
+                current = None
+        out.append(ln)
+    Path(pdb_out).write_text("".join(out))
+    return kept
+
+
 def resolve_snapshot_chain_split(snapshot, input_pdb):
     """Map the input-PDB chain A length onto a cpptraj snapshot's residue numbering.
 

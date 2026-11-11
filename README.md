@@ -51,21 +51,36 @@ python scripts/score_model.py --pdb structures/capped_model_1ACB.pdb --model gfn
 python scripts/score_model.py --pdb structures/capped_model_1ACB.pdb --model pm6_d3h4x_cosmo2
 python scripts/score_model.py --pdb structures/capped_model_1ACB.pdb --model pm6_d3h4_cosmo_nofc
 python scripts/score_model.py --pdb structures/capped_model_1ACB.pdb --model pm7
+python scripts/score_model.py --pdb structures/capped_model_1ACB.pdb --model gfn2_cpcmx --threads 4
 ```
 
 The input PDB uses the layout of the scored models: chain A is partner A plus any interfacial waters, and chain B is partner B. Caps, where the backbone was cut, are the neutral residues BNC, BCC, BCG and BCB. The printed energy is E(AB) − E(A) − E(B) in kcal/mol.
 
 Partner charges are read from a `.trunc.json` sidecar next to the PDB, which `truncate_interface.py` writes, or otherwise from the residue names and chain termini. Pass `--charge-a` and `--charge-b` to set them yourself, and `--charges-only` to print them without running a calculation. If MOPAC (MOZYME) rejects the charges, the script retries with the charges MOPAC computed, as the batch scoring did, and reports the charges it used.
 
-Inputs and logs go to `score_<pdb>_<model>/`, or to `--workdir`. Running the same command again replaces that directory. `--threads` sets the threads for xtb or MOPAC (default 1).
+**Water options** (the same flags for every model):
 
-`--model` is one of the following. GFN-xTB models run xtb directly; the others run MOPAC through cuby4.
+| flag | meaning |
+|---|---|
+| `--max-waters N` | keep only the first N waters of the PDB (file order; the paper's models are already ranked by bridging score) |
+| `--water-assign receptor` | default: all waters stay with partner A, the Nwat-MM/GBSA convention used in the paper |
+| `--water-assign nearer` | each water is counted with the closer partner (Supporting Information S7) |
+
+```bash
+python scripts/score_model.py --pdb structures/capped_model_1ACB.pdb --model gfn2_gbsa --max-waters 20
+python scripts/score_model.py --pdb structures/capped_model_1ACB.pdb --model gfn2_gbsa --water-assign nearer
+```
+
+Inputs and logs go to `score_<pdb>_<model>/`, or to `--workdir`. Running the same command again replaces that directory. `--threads` sets the threads for xtb, cpx or MOPAC (default 1).
+
+`--model` is one of the following. GFN-xTB models run xtb; `gfn2_cpcmx` runs xtb with the standalone `cpx` program; the others run MOPAC through cuby4.
 
 | name | method | program |
 |---|---|---|
 | `gfn2_gbsa` | GFN2-xTB/GBSA | xtb |
 | `gfn2_alpb` | GFN2-xTB/ALPB | xtb |
 | `gfn2_cosmo` | GFN2-xTB/ddCOSMO | xtb |
+| `gfn2_cpcmx` | GFN2-xTB/CPCM-X | xtb, cpx |
 | `gfn1_gbsa` | GFN1-xTB/GBSA | xtb |
 | `gfn1_alpb` | GFN1-xTB/ALPB | xtb |
 | `gfn1_cosmo` | GFN1-xTB/ddCOSMO | xtb |
@@ -99,8 +114,37 @@ Inputs and logs go to `score_<pdb>_<model>/`, or to `--workdir`. Running the sam
 | `pm6_d3h4x_cosmo2` | −93.2844 | 1 min, one thread |
 | `pm6_d3_cosmo` | −147.6929 | 1 min, one thread |
 | `pm6_ml` | −202.3824 | 1 min, `--threads 4` |
+| `gfn2_cpcmx` | −142.5842 | about 8 min, `--threads 4` |
 
-GFN2-xTB/CPCM-X is not in `score_model.py`. It is computed by `workflow/03_cpcmx.sh` with the standalone CPCM-X program.
+With `--water-assign nearer` on the same structure, `gfn2_gbsa` gives −88.1715 kcal/mol (9 waters with A, 11 with B).
+
+## Select frames from a trajectory
+
+`select_frames.py` reads an Amber topology and its four production trajectories and writes the dry and wet PDBs that the scoring uses. Two schemes match the paper:
+
+```bash
+# even-10: ten frames of the final nanosecond
+python scripts/select_frames.py --scheme even10 \
+    --sysdir $PPISQM_WORK/md/systems_propka_r1 --rep r1 \
+    --out-base $PPISQM_WORK/even10_r1 --systems 1ACB
+
+# basins: centroids of clusters that hold >5% of all production frames
+python scripts/select_frames.py --scheme basin --metric aa \
+    --sysdir $PPISQM_WORK/md/systems_propka_r1 --rep r1 \
+    --out-base $PPISQM_WORK/basins_aa_r1 --systems 1ACB
+python scripts/select_frames.py --scheme basin --metric iface_sc ...
+python scripts/select_frames.py --scheme basin --metric bb ...
+python scripts/select_frames.py --scheme basin --metric contacts \
+    --n-chain-a 237 ...
+```
+
+`--metric` for basins is `aa` (all-atom RMSD), `bb` (backbone), `iface_sc` (interface side-chain), `iface_heavy`, `iface_polar`, or `contacts` (Jaccard distance of interchain residue contacts). Each wet PDB keeps `--max-waters` waters (default 30) closest to the polar interface mask. The twenty dASA masks of the paper are in `data/interface_masks/`. Override them with `--water-mask` or `--dasa-resids`, and pass `--any-waters` to anchor waters on every interface residue instead of polar ones only. Output layout:
+
+```
+<out-base>/<ID>/ff14sb/<rep>/dry_f1.pdb
+<out-base>/<ID>/ff14sb/<rep>/wet_f1.pdb
+<out-base>/<ID>/ff14sb/<rep>/basins.json   # populations for weighted means
+```
 
 ## Build a capped model from an MD frame
 
@@ -130,7 +174,9 @@ The paper selected the residues that lose more than 0.5 Å² of solvent-accessib
 
 ## Score trajectories
 
-`workflow/02_score.sh` runs the scoring of the paper on one or more trajectory sets. It extracts frames and cluster representatives, builds the capped models, scores them with the chosen models, and runs Nwat-MM/GBSA and the MM/GB-minimised control. It expects the Amber topology and the four 1 ns production trajectories of each complex:
+For a single complex, the steps above are enough: `select_frames.py`, then `truncate_interface.py` on each wet PDB, then `score_model.py` with the model and water flags you want.
+
+`workflow/02_score.sh` runs the full paper protocol on one or more trajectory sets. It extracts frames and cluster representatives, builds the capped models, scores them with the chosen models, and runs Nwat-MM/GBSA and the MM/GB-minimised control. It expects the Amber topology and the four 1 ns production trajectories of each complex:
 
 ```
 $PPISQM_WORK/md/systems_propka_<set>/<ID>/<ID>_complex_wat.top
@@ -161,14 +207,16 @@ Without `SKIP_HARVEST=1`, the script first collects the energies from the calcul
 ## Contents
 
 ```
-scripts/          model building, scoring, statistics and figures
+scripts/          frame selection, model building, scoring, statistics and figures
 workflow/         02_score.sh, 03_cpcmx.sh, 04_analysis.sh
-data/             result tables (CSV)
+data/             result tables (CSV) and dASA interface masks of the twenty complexes
 structures/capped_model_1ACB.pdb
                   one capped interface model scored in the paper
 structures/chain_reference/
                   the twenty starting complexes; their first chain defines partner A
 params/caps/      tleap parameters of the cap residues
+params/interface.pymol
+                  PyMOL InterfaceResidues script for new dASA masks
 ```
 
 The trajectories (about 265 GB) and the capped models of every frame are not in this repository. They are available from the authors on request. The benchmark files of Maffucci and Contini are not included either.
