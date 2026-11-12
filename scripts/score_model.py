@@ -7,13 +7,20 @@ E(AB) - E(A) - E(B) in kcal/mol, the same definition as in the paper.
 GFN-xTB models run xtb directly; GFN2-xTB/CPCM-X runs xtb with the standalone
 cpx program; PM6, PM7 and PM6-ML models run MOPAC through cuby4.
 
+The default is the best protocol in the paper: GFN2-xTB/GBSA on the centroids
+of interface side-chain basins, with the 20 best bridging waters counted with
+partner A and an unweighted mean. ``--example`` runs it on the shipped
+40-frame 2OOB trajectory.
+
 Examples
 --------
+python scripts/score_model.py --example --threads 4
+python scripts/score_model.py --top complex.prmtop --traj prod.nc --system 2OOB
+python scripts/score_model.py --example --scheme even10
+python scripts/score_model.py --example --model pm6_d3h4x_cosmo2
 python scripts/score_model.py --list
-python scripts/score_model.py --pdb structures/capped_model_1ACB.pdb --model gfn2_gbsa
-python scripts/score_model.py --pdb structures/capped_model_1ACB.pdb --model pm6_d3h4x_cosmo2
-python scripts/score_model.py --pdb structures/capped_model_1ACB.pdb --model gfn2_cpcmx --threads 4
-python scripts/score_model.py --pdb model.pdb --model gfn2_gbsa --max-waters 20 --water-assign nearer
+python scripts/score_model.py --pdb structures/capped_model_1ACB.pdb
+python scripts/score_model.py --pdb structures/capped_model_1ACB.pdb --max-waters 20 --water-assign nearer
 """
 from __future__ import annotations
 
@@ -262,18 +269,194 @@ def score_mopac_model(pdb_path, model, charge_a, charge_b, workdir, threads,
         known.update(QM.mozyme_computed_charges(workdir))
 
 
+def score_trajectory(args):
+    """Frames, bridging waters, then one energy per frame and their mean."""
+    import interface_dasa as ID
+    import select_frames as SF
+    from amber_setup import amber_bin
+    from paths import CHAIN_REF
+
+    if not Path(amber_bin("cpptraj")).is_file():
+        raise SystemExit("cpptraj (AmberTools) is required to read a trajectory. "
+                         "Install AmberTools and set AMBERHOME (default /opt/amber22).")
+    if not args.charges_only:
+        check_programs(args.model)
+
+    top = Path(args.top).resolve()
+    trajs = [Path(t).resolve() for t in args.traj]
+    for path in (top, *trajs):
+        if not path.is_file():
+            raise SystemExit(f"no such file: {path}")
+    system = args.system or SF.system_name(top)
+
+    if args.dasa_resids:
+        dasa = SF._parse_dasa_arg(args.dasa_resids)
+    else:
+        dasa = sorted(ID.get_mask(system, dasa_cutoff=0.5, polar=False) or [])
+    if not dasa:
+        raise SystemExit(f"{system}: no dASA mask in data/interface_masks. "
+                         "Pass --dasa-resids (a cpptraj mask or a JSON file).")
+    input_pdb = Path(args.input_pdb) if args.input_pdb else CHAIN_REF / f"{system}_input.pdb"
+    if not input_pdb.is_file():
+        input_pdb = None
+    if input_pdb is None and args.n_chain_a is None:
+        raise SystemExit("pass --input-pdb or --n-chain-a so partner A can be "
+                         f"identified (no {CHAIN_REF / (system + '_input.pdb')})")
+
+    # The paper pulls the 30 waters closest to the polar interface, then keeps
+    # the 20 with the best bridging score in the capped model.
+    max_waters = 20 if args.max_waters is None else args.max_waters
+    closest = (args.closest_waters if args.closest_waters is not None
+               else max(30, max_waters))
+    polar = not args.any_waters
+
+    print(f"model:    {args.model} ({label(args.model)})")
+    print(f"system:   {system}")
+    print(f"scheme:   {args.scheme}"
+          + (f" / {args.metric}" if args.scheme == "basin" else ""))
+    print(f"waters:   closest {closest} to the {'polar ' if polar else ''}interface, "
+          f"then {max_waters} by bridging score, assign={args.water_assign}")
+    print(f"weight:   {'population-weighted' if args.weight == 'population' else 'unweighted'} mean")
+
+    workdir = (args.workdir or Path(f"score_{system}_{args.model}")).resolve()
+    prepare_workdir(workdir)
+    _system, status, info = SF.run(
+        system, top, trajs, workdir / "frames",
+        scheme=args.scheme, metric=args.metric, rep=args.rep,
+        n_frames=args.n_frames, stride=args.stride,
+        n_clusters=args.n_clusters, min_frac=args.min_frac,
+        max_waters=closest, polar_waters=polar, water_mask=args.water_mask,
+        dasa_resids=dasa, n_chain_a=args.n_chain_a, input_pdb=input_pdb, force=True)
+    if status not in ("ok", "cached") or not info or not info.get("basins"):
+        raise SystemExit(f"{system}: frame selection failed: {status}")
+    if info.get("stride_note"):
+        print(f"note:     {info['stride_note']}")
+    frame_dir = Path(info["out_dir"])
+
+    rows = []
+    for basin in info["basins"]:
+        wet = frame_dir / f"wet_f{basin['snap']}.pdb"
+        frame_work = workdir / f"f{basin['snap']}"
+        frame_work.mkdir(parents=True, exist_ok=True)
+        capped = frame_work / "capped.pdb"
+        if input_pdb is not None:
+            n_chain_a, n_prot = TI.resolve_snapshot_chain_split(wet, input_pdb)
+        else:
+            n_chain_a = args.n_chain_a
+            n_prot = TI._snapshot_protein_res_count(wet)
+        stats = TI.truncate(
+            wet, capped, n_chain_a, n_prot, 8.0,
+            keep_waters=True, max_waters=max_waters, polar_waters=polar,
+            interface_mode="dasa", dasa_resids=set(dasa))
+        charge_a, charge_b = int(stats["charge_a"]), int(stats["charge_b"])
+        print(f"frame {basin['snap']}: atoms={stats['n_atoms']} "
+              f"waters={stats['n_waters']} pop={basin['frac']} "
+              f"charge={charge_a}/{charge_b}")
+        row = {"snap": basin["snap"], "frac": basin["frac"],
+               "n_atoms": stats["n_atoms"], "n_waters": stats["n_waters"],
+               "charge_a": charge_a, "charge_b": charge_b}
+        if args.charges_only:
+            rows.append(row)
+            continue
+        geom, notes = prepare_geometry(capped, frame_work, None, args.water_assign)
+        for note in notes:
+            print(f"  {note}")
+        energy, st = _score_one(args.model, geom, charge_a, charge_b,
+                                frame_work, args.threads, args.water_assign)
+        print(f"  {st}: {energy if energy is None else f'{energy:.4f}'} kcal/mol")
+        if energy is None:
+            raise SystemExit(f"frame {basin['snap']} failed; logs in {frame_work}")
+        row["energy"] = energy
+        row["status"] = st
+        rows.append(row)
+
+    summary = {
+        "system": system, "model": args.model, "scheme": args.scheme,
+        "metric": args.metric, "max_waters": max_waters, "closest_waters": closest,
+        "polar_waters": polar, "water_assign": args.water_assign,
+        "weight": args.weight, "frames": rows,
+        **{k: info.get(k) for k in ("n_basins", "covered_frac", "total_frames",
+                                    "stride", "stride_note", "rms_mask")},
+    }
+    scored = rows and rows[0].get("energy") is not None
+    if scored:
+        mean = sum(r["energy"] for r in rows) / len(rows)
+        weight = sum(r["frac"] for r in rows)
+        weighted = sum(r["energy"] * r["frac"] for r in rows) / weight
+        summary["mean"] = round(mean, 4)
+        summary["weighted"] = round(weighted, 4)
+    (workdir / "frames.json").write_text(json.dumps(summary, indent=1))
+    print(f"logs:     {workdir}")
+    if not scored:
+        return
+    reported = weighted if args.weight == "population" else mean
+    print(f"frames:   {len(rows)}")
+    print(f"mean:     {mean:.4f} kcal/mol (unweighted)")
+    print(f"weighted: {weighted:.4f} kcal/mol (population-weighted)")
+    print(f"energy:   {reported:.4f} kcal/mol")
+
+
+def _score_one(model, geom, charge_a, charge_b, workdir, threads, water_assign):
+    kind = MODELS[model]
+    if kind == "xtb":
+        return score_xtb_model(geom, model, charge_a, charge_b, workdir, threads)
+    if kind == "CPCM-X":
+        return score_cpcmx_model(geom, charge_a, charge_b, workdir, threads)
+    return score_mopac_model(
+        geom, model, charge_a, charge_b, workdir, threads, water_assign)
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--list", action="store_true", help="print the model names and exit")
-    ap.add_argument("--pdb", help="capped interface PDB (chain A, chain B)")
-    ap.add_argument("--model", choices=list(MODELS), metavar="MODEL",
-                    help="energy model, see --list")
+    ap.add_argument("--example", action="store_true",
+                    help="score the shipped 40-frame 2OOB trajectory")
+    ap.add_argument("--pdb", help="one capped interface PDB (chain A, chain B)")
+    ap.add_argument("--top", help="Amber topology of a solvated complex")
+    ap.add_argument("--traj", nargs="+", metavar="TRAJ",
+                    help="trajectory files in order (mdcrd or netcdf)")
+    ap.add_argument("--system", help="complex id, if it is not the topology name")
+    ap.add_argument("--model", choices=list(MODELS), default="gfn2_gbsa", metavar="MODEL",
+                    help="energy model (default gfn2_gbsa, GFN2-xTB/GBSA); see --list")
     ap.add_argument("--charge-a", type=int, default=None, help="formal charge of chain A")
     ap.add_argument("--charge-b", type=int, default=None, help="formal charge of chain B")
+    ap.add_argument("--scheme", choices=["basin", "even10"], default="basin",
+                    help="frame selection (default basin, the best protocol; "
+                         "even10 = evenly spaced frames of the last trajectory)")
+    ap.add_argument("--metric",
+                    choices=["iface_sc", "aa", "bb", "iface_heavy", "iface_polar",
+                             "contacts"],
+                    default="iface_sc",
+                    help="basin distance (default iface_sc, interface side-chain RMSD)")
+    ap.add_argument("--min-frac", type=float, default=0.05,
+                    help="keep basins holding at least this fraction of the frames")
+    ap.add_argument("--n-clusters", type=int, default=10)
+    ap.add_argument("--n-frames", type=int, default=10, help="even10: number of frames")
+    ap.add_argument("--stride", type=int, default=100,
+                    help="even10: frame stride (100 on a 1000-frame nanosecond)")
+    ap.add_argument("--weight", choices=["mean", "population"], default="mean",
+                    help="how basin energies are combined (default mean, unweighted)")
     ap.add_argument("--max-waters", type=int, default=None,
-                    help="keep only the first N waters of the PDB (file order; "
-                         "the paper's models are ranked by bridging score)")
+                    help="waters in the scored model (default 20 for a trajectory: "
+                         "the best bridging waters; on a PDB, the first N in file order)")
+    ap.add_argument("--closest-waters", type=int, default=None,
+                    help="waters taken from the solvent box before the bridging-score "
+                         "ranking (default 30, as in the paper)")
+    ap.add_argument("--any-waters", action="store_true",
+                    help="anchor waters on every interface residue; the default "
+                         "uses only polar and charged ones")
+    ap.add_argument("--water-mask", default=None,
+                    help="cpptraj mask for the closest-water step, e.g. :5,10,22")
+    ap.add_argument("--dasa-resids", default=None,
+                    help="interface residues: a cpptraj mask or a JSON file "
+                         "(default: data/interface_masks for this complex)")
+    ap.add_argument("--input-pdb", default=None,
+                    help="complex PDB whose first chain is partner A "
+                         "(default: structures/chain_reference/<ID>_input.pdb)")
+    ap.add_argument("--n-chain-a", type=int, default=None,
+                    help="residues in partner A, if no --input-pdb is available")
+    ap.add_argument("--rep", default="set1", help="label of this trajectory set")
     ap.add_argument("--water-assign", choices=["receptor", "nearer"], default="receptor",
                     help="receptor (default): all waters with partner A, the "
                          "Nwat-MM/GBSA convention used in the paper; nearer: each "
@@ -288,8 +471,19 @@ def main():
     if args.list:
         list_models()
         return
-    if not args.pdb or not args.model:
-        ap.error("give --pdb and --model, or --list")
+    if args.example:
+        from paths import ROOT
+        args.top = str(ROOT / "examples" / "2OOB" / "2OOB_complex_wat.top")
+        args.traj = [str(ROOT / "examples" / "2OOB" / "2OOB_sample.nc")]
+        args.system = args.system or "2OOB"
+    if args.top or args.traj:
+        if args.pdb:
+            ap.error("pass a trajectory (--top and --traj) or one --pdb, not both")
+        if not args.top or not args.traj:
+            ap.error("pass both --top and --traj")
+        return score_trajectory(args)
+    if not args.pdb:
+        ap.error("give --pdb, or --top and --traj, or --example")
     given = (args.charge_a is not None, args.charge_b is not None)
     if given == (True, False) or given == (False, True):
         ap.error("pass both --charge-a and --charge-b, or neither")

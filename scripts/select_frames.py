@@ -8,9 +8,9 @@ Two schemes match the paper:
 
   basin     average-linkage hierarchical clustering of all production frames
             into ten clusters; the centroid of every basin that holds more
-            than --min-frac (default 0.05) of the frames is kept. The distance
-            is RMSD over all-atom, backbone or interface side-chain atoms, or
-            the Jaccard distance of interchain residue contacts.
+            than --min-frac (default 0.05) of the frames is kept. The default
+            distance is the interface side-chain RMSD. The others are all-atom
+            RMSD, backbone RMSD and the Jaccard distance of interchain contacts.
 
 Each selected frame is written as dry_fN.pdb (no solvent) and wet_fN.pdb (the
 --max-waters waters closest to the interface water mask). A basins.json file
@@ -52,6 +52,15 @@ RMS_MASKS = {
     "bb": "!(:WAT,HOH,T4D,Na+,Cl-)&@CA,C,N",
 }
 CONTACT_CUT = 4.5
+
+
+def system_name(top):
+    """``2OOB_complex_wat.top`` -> ``2OOB``."""
+    name = Path(top).name
+    for suffix in ("_complex_wat.prmtop", "_complex_wat.top", ".prmtop", ".parm7", ".top"):
+        if name.endswith(suffix) and name != suffix:
+            return name[:-len(suffix)]
+    return Path(top).stem
 
 
 def _traj_paths(sysdir, system):
@@ -163,10 +172,11 @@ def extract_frame(top, trajs, counts, global_frame, dry_dst, wet_dst, water_mask
 
 
 def even10(system, rep, sysdir, out_base, ff_folder, n_frames, stride, max_waters,
-           water_mask, force):
+           water_mask, force, top=None, trajs=None):
     env, _ = amber_env()
-    _root, top, trajs = _traj_paths(sysdir, system)
-    traj = trajs[-1]  # prod4, the final nanosecond
+    if top is None:
+        _root, top, trajs = _traj_paths(sysdir, system)
+    traj = list(trajs)[-1]  # final file: prod4, the final nanosecond, when four are given
     if not top.exists() or not traj.exists():
         return system, "missing top/traj", None
     out_dir = Path(out_base) / system / ff_folder / rep
@@ -174,39 +184,55 @@ def even10(system, rep, sysdir, out_base, ff_folder, n_frames, stride, max_water
     info_f = out_dir / "basins.json"
     if not force and info_f.exists() and all(
             (out_dir / f"wet_f{i}.pdb").exists() for i in range(1, n_frames + 1)):
-        return system, "cached", json.loads(info_f.read_text())
+        cached = json.loads(info_f.read_text())
+        cached["out_dir"] = str(out_dir)
+        return system, "cached", cached
 
     work = out_dir / "_extract"
     work.mkdir(exist_ok=True)
     counts = _frame_counts([traj], top, work, env)
     if not counts:
         return system, "frame count failed", None
-    # Global indices over prod4 alone.
+    # The paper's even-10 is stride 100 on a 1000-frame nanosecond. A shorter
+    # file, such as the shipped 2OOB sample, is spaced so the frames still fit.
+    n_avail = counts[0]
+    n_used, stride_used = n_frames, stride
+    if n_used > n_avail:
+        n_used, stride_used = n_avail, 1
+    elif n_used > 1 and 1 + (n_used - 1) * stride_used > n_avail:
+        stride_used = max(1, (n_avail - 1) // (n_used - 1))
+    note = None
+    if n_used != n_frames or stride_used != stride:
+        note = (f"last trajectory has {n_avail} frames; "
+                f"taking {n_used} at stride {stride_used}")
     basins = []
-    for i in range(1, n_frames + 1):
-        fr = 1 + (i - 1) * stride
+    for i in range(1, n_used + 1):
+        fr = 1 + (i - 1) * stride_used
         dry = out_dir / f"dry_f{i}.pdb"
         wet = out_dir / f"wet_f{i}.pdb"
         ok, extra = extract_frame(top, [traj], counts, fr, dry, wet, water_mask,
                                   max_waters, env, work / f"f{i}")
         if not ok:
             return system, f"extract f{i} failed: {extra}", None
-        basins.append({"snap": i, "frac": 1.0 / n_frames,
+        basins.append({"snap": i, "frac": round(1.0 / n_used, 4),
                        "centroid_global_frame": fr, **extra})
     info = {
         "system": system, "rep": rep, "ff": ff_folder, "scheme": "even10",
-        "n_frames": n_frames, "stride": stride, "max_waters": max_waters,
+        "n_frames": n_used, "stride": stride_used, "max_waters": max_waters,
         "water_mask": water_mask, "n_basins": len(basins),
-        "covered_frac": 1.0, "basins": basins,
+        "covered_frac": 1.0, "basins": basins, "out_dir": str(out_dir),
+        "stride_note": note,
     }
     info_f.write_text(json.dumps(info, indent=2))
     return system, "ok", info
 
 
 def cluster_rmsd(system, rep, sysdir, out_base, ff_folder, metric, n_clusters,
-                 min_frac, max_waters, water_mask, dasa_resids, force):
+                 min_frac, max_waters, water_mask, dasa_resids, force,
+                 top=None, trajs=None):
     env, _ = amber_env()
-    _root, top, trajs = _traj_paths(sysdir, system)
+    if top is None:
+        _root, top, trajs = _traj_paths(sysdir, system)
     if not top.exists() or not all(t.exists() for t in trajs):
         return system, "missing top/traj", None
     if metric in RMS_MASKS:
@@ -225,6 +251,7 @@ def cluster_rmsd(system, rep, sysdir, out_base, ff_folder, metric, n_clusters,
         cached = json.loads(info_f.read_text())
         if cached.get("basins") and all(
                 (out_dir / f"wet_f{b['snap']}.pdb").exists() for b in cached["basins"]):
+            cached["out_dir"] = str(out_dir)
             return system, "cached", cached
 
     counts = _frame_counts(trajs, top, work, env)
@@ -265,7 +292,7 @@ def cluster_rmsd(system, rep, sysdir, out_base, ff_folder, metric, n_clusters,
         "min_frac": min_frac, "max_waters": max_waters, "water_mask": water_mask,
         "total_frames": sum(counts), "n_basins": len(basins),
         "covered_frac": round(sum(b["frac"] for b in basins), 4),
-        "basins": basins,
+        "basins": basins, "out_dir": str(out_dir),
     }
     info_f.write_text(json.dumps(info, indent=2))
     return system, "ok", info
@@ -292,9 +319,11 @@ def _medoid(X, members):
 
 
 def cluster_contacts(system, rep, sysdir, out_base, ff_folder, n_clusters,
-                     min_frac, max_waters, water_mask, n_chain_a, force):
+                     min_frac, max_waters, water_mask, n_chain_a, force,
+                     top=None, trajs=None):
     env, _ = amber_env()
-    _root, top, trajs = _traj_paths(sysdir, system)
+    if top is None:
+        _root, top, trajs = _traj_paths(sysdir, system)
     if not top.exists() or not all(t.exists() for t in trajs):
         return system, "missing top/traj", None
     if n_chain_a is None or n_chain_a < 2:
@@ -307,7 +336,9 @@ def cluster_contacts(system, rep, sysdir, out_base, ff_folder, n_clusters,
     if not force and info_f.exists() and all(
             (out_dir / f"wet_f{b['snap']}.pdb").exists()
             for b in json.loads(info_f.read_text()).get("basins", [])):
-        return system, "cached", json.loads(info_f.read_text())
+        cached = json.loads(info_f.read_text())
+        cached["out_dir"] = str(out_dir)
+        return system, "cached", cached
 
     series = work / "ic_series.dat"
     trajin = "".join(f"trajin {t}\n" for t in trajs)
@@ -363,7 +394,7 @@ def cluster_contacts(system, rep, sysdir, out_base, ff_folder, n_clusters,
         "n_contacts": int(Xv.shape[1]), "total_frames": n,
         "n_basins": len(basins),
         "covered_frac": round(sum(b["frac"] for b in basins), 4),
-        "basins": basins,
+        "basins": basins, "out_dir": str(out_dir),
     }
     info_f.write_text(json.dumps(info, indent=2))
     return system, "ok", info
@@ -373,10 +404,6 @@ def _n_chain_a_for(system, sysdir, n_chain_a, input_pdb):
     if n_chain_a is not None:
         return n_chain_a
     if input_pdb is not None:
-        dry = Path(sysdir) / system / f"{system}_complex_wat.top"
-        # Prefer a dry snapshot if one already exists next to an older run;
-        # otherwise scale from the input PDB using residue count of the topology
-        # is not available as a PDB. Fall back to the input-PDB chain length.
         from common import get_first_chain_nres
         return get_first_chain_nres(input_pdb)
     # Optional: tleap capfix next to the topology (paper MD layout).
@@ -384,21 +411,49 @@ def _n_chain_a_for(system, sysdir, n_chain_a, input_pdb):
     return n_chain_a_tleap(system, sysdir)
 
 
-def process(system, args, water_mask, dasa_resids):
+def process(system, args, water_mask, dasa_resids, top=None, trajs=None):
     nA = _n_chain_a_for(system, args.sysdir, args.n_chain_a, args.input_pdb)
     if args.scheme == "even10":
         return even10(system, args.rep, args.sysdir, args.out_base, args.ff_folder,
                       args.n_frames, args.stride, args.max_waters, water_mask,
-                      args.force)
+                      args.force, top=top, trajs=trajs)
     if args.metric == "contacts":
         return cluster_contacts(
             system, args.rep, args.sysdir, args.out_base, args.ff_folder,
             args.n_clusters, args.min_frac, args.max_waters, water_mask, nA,
-            args.force)
+            args.force, top=top, trajs=trajs)
     return cluster_rmsd(
         system, args.rep, args.sysdir, args.out_base, args.ff_folder,
         args.metric, args.n_clusters, args.min_frac, args.max_waters,
-        water_mask, dasa_resids, args.force)
+        water_mask, dasa_resids, args.force, top=top, trajs=trajs)
+
+
+def run(system, top, trajs, out_base, scheme="basin", metric="iface_sc",
+        rep="set1", ff_folder="ff14sb", n_frames=10, stride=100,
+        n_clusters=10, min_frac=0.05, max_waters=30, polar_waters=True,
+        water_mask=None, dasa_resids=None, n_chain_a=None, input_pdb=None,
+        force=False):
+    """Select frames from explicit topology and trajectory files.
+
+    ``dasa_resids`` is a residue list, a cpptraj mask, or a JSON mask file.
+    Returns the ``(system, status, info)`` triple of the other selectors.
+    """
+    if isinstance(dasa_resids, str):
+        dasa_resids = _parse_dasa_arg(dasa_resids)
+    elif dasa_resids is not None:
+        dasa_resids = sorted(dasa_resids)
+    mask = _water_mask(system, dasa_resids, polar_waters, water_mask)
+    args = argparse.Namespace(
+        scheme=scheme, metric=metric, rep=rep, sysdir=None,
+        out_base=str(out_base), ff_folder=ff_folder,
+        n_frames=n_frames, stride=stride, n_clusters=n_clusters,
+        min_frac=min_frac, max_waters=max_waters,
+        n_chain_a=n_chain_a,
+        input_pdb=Path(input_pdb) if input_pdb else None,
+        force=force,
+    )
+    return process(system, args, mask, dasa_resids,
+                   top=Path(top), trajs=[Path(t) for t in trajs])
 
 
 def main():
@@ -408,10 +463,14 @@ def main():
     ap.add_argument("--metric",
                     choices=["aa", "bb", "iface_sc", "iface_heavy", "iface_polar",
                              "contacts"],
-                    default="aa",
-                    help="basin distance (ignored for even10); default aa")
-    ap.add_argument("--sysdir", required=True,
+                    default="iface_sc",
+                    help="basin distance (ignored for even10); default iface_sc, "
+                         "the interface side-chain RMSD of the best protocol")
+    ap.add_argument("--sysdir",
                     help="directory of <ID>/<ID>_complex_wat.top and .prod1-4.mdcrd")
+    ap.add_argument("--top", help="Amber topology; use with --traj instead of --sysdir")
+    ap.add_argument("--traj", nargs="+", help="one or more trajectories, in order")
+    ap.add_argument("--system", help="complex id when it is not the topology file name")
     ap.add_argument("--rep", default="r1", help="replica label written into the output tree")
     ap.add_argument("--out-base", required=True)
     ap.add_argument("--systems", nargs="*", default=PDB_IDS)
@@ -448,6 +507,25 @@ def main():
     dasa_resids = _parse_dasa_arg(args.dasa_resids)
     input_pdb = Path(args.input_pdb) if args.input_pdb else None
     args.input_pdb = input_pdb
+
+    if args.top or args.traj:
+        if not args.top or not args.traj:
+            ap.error("pass both --top and --traj")
+        system = args.system or system_name(args.top)
+        _system, status, info = run(
+            system, args.top, args.traj, args.out_base,
+            scheme=args.scheme, metric=args.metric, rep=args.rep,
+            ff_folder=args.ff_folder, n_frames=args.n_frames, stride=args.stride,
+            n_clusters=args.n_clusters, min_frac=args.min_frac,
+            max_waters=args.max_waters, polar_waters=args.polar_waters,
+            water_mask=args.water_mask, dasa_resids=dasa_resids,
+            n_chain_a=args.n_chain_a, input_pdb=input_pdb, force=args.force)
+        nb = info["n_basins"] if info else 0
+        print(f"{system}: {status} n={nb}"
+              + (f"\n{info['stride_note']}" if info and info.get("stride_note") else ""))
+        return
+    if not args.sysdir:
+        ap.error("pass --sysdir, or --top and --traj")
 
     jobs = []
     for system in args.systems:

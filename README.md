@@ -43,18 +43,61 @@ cuby4 calls `scripts/mopac-ml-cuby` in place of MOPAC for these models, and that
 
 **xtb.** `xtb` is found on `PATH`. To use another installation, set `XTB_HOME` to the prefix that contains `bin/xtb` and `share/xtb`.
 
+## Score a trajectory
+
+One command selects the frames, selects the interfacial waters, builds the capped models and scores them. With no flags other than the input, it runs the best protocol in the paper: GFN2-xTB/GBSA (`gfn2_gbsa`) on the centroids of interface side-chain RMSD basins that hold more than 5% of the frames, combined as an unweighted mean. Waters are selected in the two steps used for the paper. cpptraj takes the 30 waters closest to the polar interface residues, and the capped model then keeps the 20 with the best bridging score (within 8 Å of a polar or charged interface residue, closest to being between the two partners). All of them are counted with partner A.
+
+```bash
+python scripts/score_model.py --example --threads 4
+```
+
+`--example` is the shipped trajectory `examples/2OOB/`: the Amber topology of 2OOB and 40 frames taken every 25th frame from the final nanosecond of trajectory r1. It is there so the command can be run as it stands. It is a short test, not the 4000-frame calculation reported in the paper. On this sample the command keeps 8 basins, 551 atoms and 20 waters in each model, and the unweighted mean is −78.7847 kcal/mol.
+
+The same command on your own files, for one of the twenty complexes:
+
+```bash
+python scripts/score_model.py \
+    --top complex_wat.prmtop --traj prod1.nc prod2.nc prod3.nc prod4.nc \
+    --system 2OOB
+```
+
+The complex id selects its dASA mask in `data/interface_masks/` and its partner boundary in `structures/chain_reference/`. For a complex that is not one of the twenty, pass `--dasa-resids` and `--input-pdb` (or `--n-chain-a`).
+
+| flag | default | |
+|---|---|---|
+| `--model` | `gfn2_gbsa` | any name from `--list` |
+| `--scheme basin` | basin | centroids of clusters larger than `--min-frac` (0.05) |
+| `--scheme even10` | | ten evenly spaced frames of the last trajectory (stride 100) |
+| `--metric` | `iface_sc` | also `aa`, `bb`, `iface_heavy`, `iface_polar`, `contacts` |
+| `--weight mean` | unweighted | `--weight population` weights basins by their frame count |
+| `--closest-waters` | 30 | waters taken from the box |
+| `--max-waters` | 20 | waters kept after the bridging-score ranking |
+| `--any-waters` | off | anchor waters on every interface residue, not only polar ones |
+| `--water-assign nearer` | `receptor` | count each water with the closer partner |
+| `--water-mask` | polar dASA mask | cpptraj mask for the closest-water step |
+
+```bash
+python scripts/score_model.py --example --scheme even10
+python scripts/score_model.py --example --metric aa --weight population
+python scripts/score_model.py --example --model pm6_d3h4x_cosmo2
+python scripts/score_model.py --example --max-waters 10 --closest-waters 30
+python scripts/score_model.py --example --water-assign nearer
+```
+
+Per-frame energies and the mean are printed, and written to `score_<ID>_<model>/frames.json`.
+
 ## Score one structure
 
 ```bash
 python scripts/score_model.py --list
-python scripts/score_model.py --pdb structures/capped_model_1ACB.pdb --model gfn2_gbsa --threads 8
+python scripts/score_model.py --pdb structures/capped_model_1ACB.pdb --threads 8
 python scripts/score_model.py --pdb structures/capped_model_1ACB.pdb --model pm6_d3h4x_cosmo2
 python scripts/score_model.py --pdb structures/capped_model_1ACB.pdb --model pm6_d3h4_cosmo_nofc
 python scripts/score_model.py --pdb structures/capped_model_1ACB.pdb --model pm7
 python scripts/score_model.py --pdb structures/capped_model_1ACB.pdb --model gfn2_cpcmx --threads 4
 ```
 
-The input PDB uses the layout of the scored models: chain A is partner A plus any interfacial waters, and chain B is partner B. Caps, where the backbone was cut, are the neutral residues BNC, BCC, BCG and BCB. The printed energy is E(AB) − E(A) − E(B) in kcal/mol.
+`--model` defaults to `gfn2_gbsa`. The input PDB uses the layout of the scored models: chain A is partner A plus any interfacial waters, and chain B is partner B. Caps, where the backbone was cut, are the neutral residues BNC, BCC, BCG and BCB. The printed energy is E(AB) − E(A) − E(B) in kcal/mol.
 
 Partner charges are read from a `.trunc.json` sidecar next to the PDB, which `truncate_interface.py` writes, or otherwise from the residue names and chain termini. Pass `--charge-a` and `--charge-b` to set them yourself, and `--charges-only` to print them without running a calculation. If MOPAC (MOZYME) rejects the charges, the script retries with the charges MOPAC computed, as the batch scoring did, and reports the charges it used.
 
@@ -138,7 +181,7 @@ python scripts/select_frames.py --scheme basin --metric contacts \
     --n-chain-a 237 ...
 ```
 
-`--metric` for basins is `aa` (all-atom RMSD), `bb` (backbone), `iface_sc` (interface side-chain), `iface_heavy`, `iface_polar`, or `contacts` (Jaccard distance of interchain residue contacts). Each wet PDB keeps `--max-waters` waters (default 30) closest to the polar interface mask. The twenty dASA masks of the paper are in `data/interface_masks/`. Override them with `--water-mask` or `--dasa-resids`, and pass `--any-waters` to anchor waters on every interface residue instead of polar ones only. Output layout:
+`--metric` for basins defaults to `iface_sc` (interface side-chain RMSD). The others are `aa` (all-atom RMSD), `bb` (backbone), `iface_heavy`, `iface_polar`, and `contacts` (Jaccard distance of interchain residue contacts). Each wet PDB keeps `--max-waters` waters (default 30) closest to the polar interface mask. The twenty dASA masks of the paper are in `data/interface_masks/`. Override them with `--water-mask` or `--dasa-resids`, and pass `--any-waters` to anchor waters on every interface residue instead of polar ones only. Output layout:
 
 ```
 <out-base>/<ID>/ff14sb/<rep>/dry_f1.pdb
@@ -174,7 +217,7 @@ The paper selected the residues that lose more than 0.5 Å² of solvent-accessib
 
 ## Score trajectories
 
-For a single complex, the steps above are enough: `select_frames.py`, then `truncate_interface.py` on each wet PDB, then `score_model.py` with the model and water flags you want.
+`score_model.py --top --traj` (above) is the way to score one complex. `select_frames.py` and `truncate_interface.py` are the two steps it runs, and they can still be called on their own.
 
 `workflow/02_score.sh` runs the full paper protocol on one or more trajectory sets. It extracts frames and cluster representatives, builds the capped models, scores them with the chosen models, and runs Nwat-MM/GBSA and the MM/GB-minimised control. It expects the Amber topology and the four 1 ns production trajectories of each complex:
 
@@ -207,6 +250,9 @@ Without `SKIP_HARVEST=1`, the script first collects the energies from the calcul
 ## Contents
 
 ```
+scripts/score_model.py
+                  one command: frame selection, water selection, scoring
+examples/2OOB/    a 40-frame trajectory and its topology, for --example
 scripts/          frame selection, model building, scoring, statistics and figures
 workflow/         02_score.sh, 03_cpcmx.sh, 04_analysis.sh
 data/             result tables (CSV) and dASA interface masks of the twenty complexes
